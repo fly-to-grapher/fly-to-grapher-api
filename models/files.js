@@ -18,10 +18,10 @@ module.exports = (sequelize, DataTypes) => {
         through: 'tag_file',
         foreignKey: 'id'
       });
-      models.Files.hasOne(models.Save, {
+      models.Files.hasMany(models.Save, {
         foreignKey: 'id'
       })
-      models.Files.hasOne(models.Likes, {
+      models.Files.hasMany(models.Likes, {
         foreignKey: 'id'
       })
       models.Files.belongsTo(models.Users,{

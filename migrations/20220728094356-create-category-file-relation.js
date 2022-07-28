@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Category_file_relations', {
+    await queryInterface.createTable('Category_file', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -9,11 +9,19 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       category_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references:{
+          model : "Categories",
+          key: "id"
+        }
       },
       file_id: {
-        type: Sequelize.INTEGER
-      },
+        type: Sequelize.INTEGER,
+        references:{
+          model : "Files",
+          key: "id"
+      }
+    },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -27,6 +35,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Category_file_relations');
+    await queryInterface.dropTable('Category_file');
   }
 };
