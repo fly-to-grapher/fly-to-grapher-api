@@ -10,7 +10,23 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      models.Files.belongsToMany(models.Categories, {
+        through: 'category_file',
+        foreignKey: 'id'
+      });
+      models.Files.belongsToMany(models.Tags, {
+        through: 'tag_file',
+        foreignKey: 'id'
+      });
+      models.Files.hasOne(models.Save, {
+        foreignKey: 'id'
+      })
+      models.Files.hasOne(models.Likes, {
+        foreignKey: 'id'
+      })
+      models.Files.belongsTo(models.Users,{
+        foreignKey: 'user_id'
+      })
     }
   }
   Files.init({

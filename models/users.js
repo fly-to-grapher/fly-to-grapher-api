@@ -10,7 +10,15 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      models.Users.hasMany(models.Files,{
+        foreignKey: 'id'
+      })
+      models.Users.hasMany(models.Save,{
+        foreignKey: 'id'
+      })
+      models.Users.hasMany(models.Likes,{
+        foreignKey: 'id'
+      })
     }
   }
   Users.init({
@@ -20,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
     isadmin: DataTypes.BOOLEAN,
     bio: DataTypes.STRING,
     location: DataTypes.STRING,
-    avatar: DataTypes.STRING
+    avatar: DataTypes.VIRTUAL
   }, {
     sequelize,
     modelName: 'Users',
