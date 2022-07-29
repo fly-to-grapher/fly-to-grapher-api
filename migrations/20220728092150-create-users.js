@@ -17,6 +17,10 @@ module.exports = {
       password: {
         type: Sequelize.STRING
       },
+      username: {
+        type: Sequelize.STRING,
+        unique:true
+      },
       isadmin: {
         type: Sequelize.BOOLEAN
       },

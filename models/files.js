@@ -32,7 +32,8 @@ module.exports = (sequelize, DataTypes) => {
   Files.init({
     file_name: DataTypes.STRING,
     user_id: DataTypes.INTEGER,
-    location: DataTypes.STRING
+    location: DataTypes.STRING,
+    file_types: DataTypes.ENUM
   }, {
     sequelize,
     modelName: 'Files',
