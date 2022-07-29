@@ -21,7 +21,7 @@ module.exports = {
       location: {
         type: Sequelize.STRING
       },
-      file_types: {
+      file_type: {
         type: Sequelize.ENUM("picture" , "video")
       },
       createdAt: {

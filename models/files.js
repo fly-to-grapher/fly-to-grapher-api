@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     file_name: DataTypes.STRING,
     user_id: DataTypes.INTEGER,
     location: DataTypes.STRING,
-    file_types: DataTypes.ENUM
+    file_type: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Files',

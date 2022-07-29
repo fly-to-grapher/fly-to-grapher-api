@@ -22,7 +22,8 @@ module.exports = {
         unique:true
       },
       isadmin: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: 0
       },
       bio: {
         type: Sequelize.STRING
