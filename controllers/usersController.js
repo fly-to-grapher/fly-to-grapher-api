@@ -53,7 +53,9 @@ const logIn = async (req, res, next) => {
 
     if (user) {
         if (authService.comparePasswords(password,user.password)) {
-            return res.send(successResponse("Success", {token: authService.signUser(user)},user))
+            return res.send(successResponse(userTransformer(user), null ,{
+                token : authService.signUser(user)
+            }))
         } else {
             return res.send(errorResponse('Password is wrong'))
         }
@@ -65,18 +67,18 @@ const logIn = async (req, res, next) => {
 const getUsers = async (req, res) => {
     const users = await models.Users.findAll({})
     if(users){
-        return res.send(successResponse("Success" , {data: usersTransformer(users)}))
+        return res.send(successResponse(usersTransformer(users) , "Success"))
     }
 }
 
 const profile = async (req, res) => {
-    const id = req.params.id
+    const id = +req.params.id
     const user = await models.Users.findOne({
         where: {
             id
         }})
     if (user) {
-        return res.send(successResponse("Success", {data: (user)}))
+        return res.send(successResponse((user), "Success"))
     } else {
         return res.send(errorResponse('There was an error'))
     }
@@ -112,7 +114,7 @@ const getUserFiles = async (req , res , next) => {
             {model : models.Save}
         ]
     })
-    return res.send(successResponse("Success", {data: filesTransformer(files)}))
+    return res.send(successResponse(filesTransformer(files) , "Success"))
 }
 
 const getUserSave = async (req , res , next) => {
@@ -126,7 +128,7 @@ const getUserSave = async (req , res , next) => {
             {model : models.Likes}
         ]
     })
-    return res.send(successResponse("Success", {data: filesTransformer(files)}))
+    return res.send(successResponse(filesTransformer(files) , "Success"))
 }
 
 const updateUser = async (req, res) => {
@@ -161,7 +163,7 @@ const updateUser = async (req, res) => {
             user.password = authService.hashPassword(password);
         };
         user.save().then((user) => {
-            res.send(successResponse('User has been updated', {user: userTransformer(user)} ));
+            res.send(successResponse(userTransformer(user) , "User has been updated"));
             return
         })
     } else {
