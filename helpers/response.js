@@ -1,18 +1,25 @@
-exports.successResponse = function(data =[] ,messages = [], extras = {}) {
+const successResponse = (data = [], messages = [], extras = {}) => {
+    // always keep messages as an array
     var messages = Array.isArray(messages) ? messages : [messages]
-    var response = {
+    return {
         success: true,
         data,
         messages,
+        ...extras
     }
-    response = {...response, ...extras}
-    return response
 }
-exports.errorResponse = function(messages = [], data = nall) {
-    var response = {
+
+const errorResponse = (messages = [], data = null) => {
+    // always keep messages as an array
+    var messages = Array.isArray(messages) ? messages : [messages]
+    return {
         success: false,
         data,
         messages
     }
-    return response
+}
+
+module.exports = {
+    successResponse,
+    errorResponse
 }
