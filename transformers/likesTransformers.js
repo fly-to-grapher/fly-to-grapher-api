@@ -1,5 +1,9 @@
+const {userTransformer} = require('./usersTransformers')
 const likeTransformer = (like) => {
-    
+    if (like.User) {
+        like.User = userTransformer(like.User)
+    }
+    return like
 }
 
 const likesTransformer = (likes) => {
