@@ -6,12 +6,12 @@ var { isAdmin } = require('../middlewares/isAdmin')
 
 router.post('/signup' , signUp)
 router.post('/login' , logIn)
-router.get('/' , getUsers)
-router.get('/:id' , profile)
-router.get('/files' , getUserFiles)
-router.get('/save' , getUserSave)
-router.put('/update/:id', updateUser)
-router.delete('/:id' , deleteUser)
+router.get('/' , isAuthenticated, isAdmin, getUsers)
+router.get('/:id' , isAuthenticated ,profile)
+router.get('/files' , isAuthenticated , getUserFiles)
+router.get('/save' , isAuthenticated, getUserSave)
+router.put('/update/:id', isAuthenticated ,updateUser)
+router.delete('/:id' , isAuthenticated , isAdmin, deleteUser)
 
 
 
