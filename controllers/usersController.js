@@ -5,7 +5,7 @@ var {userTransformer , usersTransformer} = require('../transformers/usersTransfo
 var {filesTransformer , fileTransformer} = require('../transformers/filesTransformers')
 
 const signUp = async (req, res) => {
-    const name = req?.body?.lastname
+    const name = req?.body?.name
     const email = req?.body?.email
     const password = req?.body?.password
     const username = req?.body?.username
