@@ -4,30 +4,32 @@ var jwt = require('jsonwebtoken')
 
 var authService = {
     signUser: function (user) {
-        const token = jwt.sign({
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            admin: user.admin
-        },
-        `${process.env.JWT_SECRET_KEY}` ,
-        {
-            expiresIn: '10h'
-        }
-    )
-        return token
+        const token = jwt.sign(
+            {
+                email: user.email,
+                id: user.id,
+                admin: user.isadmin,
+            },
+            `${process.env.JWT_SECRET_KEY}`,
+            {
+                expiresIn: '100h'
+            }
+        );
+        return token;
     },
-    verifyToken: (req, token) => {
+    verifyToken: async function (req, token) {
+        if (!token) {
+            return false
+        }
         try {
-            const decodedData = jwt.verify(token, `${process.env.JWT_SECRET_KEY}`)
-            req.user = {
-                id: decodedData.id,
-                email: decodedData.email,
-                token: token,
-                role: decodedData.admin
-            };
-            return (decodedData?.id) ? decodedData : false
-        } catch(e) {
+            let decoded = jwt.verify(token, `${process.env.JWT_SECRET_KEY}`);
+            const user = await models.Users.findByPk(decoded.id)
+            if (user) {
+                return user
+            } else {
+                return false
+            }
+        } catch (error) {
             return false
         }
     },

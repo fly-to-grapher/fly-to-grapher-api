@@ -28,15 +28,16 @@ module.exports = (sequelize, DataTypes) => {
     isadmin: DataTypes.BOOLEAN,
     bio: DataTypes.STRING,
     location: DataTypes.STRING,
-    avatar: {
-      type: DataTypes.VIRTUAL,
-      get() {
-        return 'https://www.gravatar.com/avatar/' + md5(this.email) + '?s=130'
-      },
-      set(value) {
-        console.log(value)
-      }
-    }
+    avatar: DataTypes.VIRTUAL,
+    // avatar: {
+    //   type: DataTypes.VIRTUAL,
+    //   get() {
+    //     return 'https://www.gravatar.com/avatar/' + md5(this.email) + '?s=130'
+    //   },
+    //   set(value) {
+    //     console.log(value)
+    //   }
+    // }
   }, {
     sequelize,
     modelName: 'Users',

@@ -3,12 +3,14 @@ var {successResponse , errorResponse} =require('../helpers/response');
 var authService = require('../services/auth');
 var {userTransformer , usersTransformer} = require('../transformers/usersTransformers')
 var {filesTransformer , fileTransformer} = require('../transformers/filesTransformers')
+const { Op } = require("sequelize");
+
 
 const signUp = async (req, res) => {
-    const name = req?.body?.name
+    const username = req?.body?.username
     const email = req?.body?.email
     const password = req?.body?.password
-    const username = req?.body?.username
+    const name = req?.body?.name
     if (username?.length < 3) {
         return res.send(errorResponse('Username is too short'))
     }
