@@ -1,5 +1,5 @@
 const models = require('../models')
-const {errorResponse, successResponse} = require('../services/response')
+const {errorResponse, successResponse} = require('../helpers/response')
 
 
 const addTag = async (req, res, next) => {
