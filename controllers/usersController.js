@@ -11,6 +11,8 @@ const signUp = async (req, res) => {
     const email = req?.body?.email
     const password = req?.body?.password
     const name = req?.body?.name
+    const bio = req?.body?.bio
+    const location = req?.body?.location
     const avatar = req?.avatar?.avatar
     if (username?.length < 3) {
         return res.send(errorResponse('Username is too short'))
@@ -38,7 +40,7 @@ const signUp = async (req, res) => {
         }
     })
     if (user) {
-        return res.send(successResponse('User created successfully'))
+        return res.send(successResponse(null,'User created successfully'))
     } else {
         return res.send(errorResponse('User is already registered'))
     }

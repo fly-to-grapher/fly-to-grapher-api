@@ -6,9 +6,10 @@ var authService = {
     signUser: function (user) {
         const token = jwt.sign(
             {
-                email: user.email,
                 id: user.id,
-                admin: user.isadmin,
+                username: user.username,
+                email: user.email,
+                admin: user.isadmin
             },
             `${process.env.JWT_SECRET_KEY}`,
             {
@@ -17,19 +18,17 @@ var authService = {
         );
         return token;
     },
-    verifyToken: async function (req, token) {
-        if (!token) {
-            return false
-        }
+    verifyToken: (req, token) => {
         try {
-            let decoded = jwt.verify(token, `${process.env.JWT_SECRET_KEY}`);
-            const user = await models.Users.findByPk(decoded.id)
-            if (user) {
-                return user
-            } else {
-                return false
-            }
-        } catch (error) {
+            const decodedData = jwt.verify(token, `${process.env.JWT_SECRET_KEY}`)
+            req.user = {
+                id: decodedData.id,
+                email: decodedData.email,
+                token: token,
+                admin: decodedData.isadmin
+            };
+            return (decodedData?.id) ? decodedData : false
+        } catch(e) {
             return false
         }
     },
