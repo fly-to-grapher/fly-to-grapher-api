@@ -204,6 +204,7 @@ const updateUser = async (req, res) => {
 module.exports = {
     signUp,
     logIn,
+    userInfo,
     getUsers,
     profile,
     deleteUser,

@@ -1,11 +1,12 @@
 var express = require('express');
 var router = express.Router();
-var {signUp , logIn , getUsers , getUserFiles , getUserSave , profile , updateUser , deleteUser} = require('../controllers/usersController')
+var {signUp , logIn , getUsers , getUserFiles , getUserSave , profile , updateUser  , userInfo , deleteUser} = require('../controllers/usersController')
 var { isAuthenticated } = require('../middlewares/isAuthenticated')
 var { isAdmin } = require('../middlewares/isAdmin')
 
 router.post('/signup' , signUp)
 router.post('/login' , logIn)
+router.post('/login' , isAuthenticated , userInfo)
 router.get('/' , isAuthenticated, isAdmin, getUsers)
 router.get('/:id' , isAuthenticated ,profile)
 router.get('/files' , isAuthenticated , getUserFiles)
