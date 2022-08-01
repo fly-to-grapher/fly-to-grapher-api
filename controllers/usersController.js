@@ -11,6 +11,7 @@ const signUp = async (req, res) => {
     const email = req?.body?.email
     const password = req?.body?.password
     const name = req?.body?.name
+    const avatar = req?.avatar?.avatar
     if (username?.length < 3) {
         return res.send(errorResponse('Username is too short'))
     }
@@ -32,7 +33,7 @@ const signUp = async (req, res) => {
             name,
             bio,
             location,
-            avatar: req.avatar?.filename,
+            avatar,
             password: authService.hashPassword(password),
         }
     })
@@ -101,7 +102,7 @@ const deleteUser = async (req,res) => {
                 }
             })
             if (deleted) {
-                return res.send(successResponse('User deleted'))
+                return res.send(successResponse(null,'User deleted'))
             } else {
                 return res.send(errorResponse('error'))
             }

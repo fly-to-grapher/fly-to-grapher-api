@@ -1,16 +1,12 @@
-var models = require('../models')
-const { errorResponse } = require('../helpers/response')
+const { errorResponse } = require("../services/response")
 
-
-const isAdmin = async (req , res , next) =>{
-    const user = await models.Users.findByPk(req.user.id)
-    if (user?.admin == 1) {
+const isAdmin = (req, res, next) => {
+    if (req.user.isadmin == 1) {
         return next()
-    };
+    }
     res.status(403)
-    res.send(errorResponse('You are not admin'));
+    res.send(errorResponse('You are not authorized'))
     return
-}
+};
 
-
-module.exports = { isAdmin  }
+module.exports = {isAdmin}

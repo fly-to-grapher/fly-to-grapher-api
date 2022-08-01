@@ -10,14 +10,16 @@ const fs = require("fs");
 const addFile = async (req, res) => {
     const location = req?.body?.location
     const file_type = req?.body?.file_type
-    const categories = req.body.categories;
-    const tags = req.body.tags;
+    const categories = req?.body?.categories;
+    const tags = req?.body?.tags;
+    const file_name = req?.file?.file_name
+    const user_id = req?.user?.id
     if (location == "") {
         return res.send(errorResponse("Please fill the location"));
     }
     const file = await models.Files.create({
-        file_name: req.file?.filename,
-        user_id: req.user.id,
+        file_name,
+        user_id,
         location,
         file_type
     })
