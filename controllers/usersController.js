@@ -15,7 +15,7 @@ const signUp = async (req, res) => {
         return res.send(errorResponse('Username is too short'))
     }
     if (name?.length < 3) {
-        return res.send(errorResponse('last name is too short'))
+        return res.send(errorResponse('name is too short'))
     }
     if (password?.length < 6) {
         return res.send(errorResponse('Password is too short'))
@@ -25,8 +25,8 @@ const signUp = async (req, res) => {
     }
     const user = await models.Users.findOrCreate({
         where: {
-                email,
-                username
+            username,
+                email
         },
         defaults: {
             name,
