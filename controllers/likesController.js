@@ -6,12 +6,12 @@ var {likesTransformer} = require('../transformers/likesTransformers')
 const addLike = async (req,res) =>{
     const like = await models.Likes.create({
         user_id : req.user.id,
-        file_id :req.body.file_id
+        file_id : req.body.file_id
     })
     if(like) {
-        res.send(successResponse(like) , "Success")
+        return res.send(successResponse(like) , "Success")
     } else {
-        res.send(errorResponse('An error occurred while adding the like'))
+        return res.send(errorResponse('An error occurred while adding the like'))
     }
 }
 
@@ -23,7 +23,9 @@ const getLikes = async (req,res) => {
         ]
     })
     if(likes) {
-        res.send(successResponse(likesTransformer(likes)))
+        return res.send(successResponse(likesTransformer(likes)))
+    } else {
+        return res.send(errorResponse('An error occurred'))
     }
 }
 
@@ -35,9 +37,9 @@ const deleteLike = async function (req, res, next) {
         }
     });
     if (deleted) {
-        res.send(successResponse(null, 'Like has been deleted'))
+        return res.send(successResponse(null, 'Like has been deleted'))
     } else {
-        res.send(errorResponse('An error occurred while deleting Like'))
+        return res.send(errorResponse('An error occurred while deleting Like'))
     };
 };
 

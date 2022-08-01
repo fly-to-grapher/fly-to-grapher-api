@@ -66,6 +66,29 @@ const logIn = async (req, res, next) => {
     }
 }
 
+
+const userInfo = async (req,res) => {
+    const bio = req?.body?.bio
+    const location = req?.body.location
+    if (location == "") {
+        return res.send(errorResponse("Please fill the location"));
+    }
+    if (bio == "") {
+        return res.send(errorResponse("Please fill the bio"));
+    }
+    const info = await models.Users.create({
+        defaults: {
+                bio,
+                location
+        }
+    })
+    if(info) {
+        return res.send(successResponse('User created successfully'))
+    } else {
+        return res.send(errorResponse(''))
+    }
+}
+
 const getUsers = async (req, res) => {
     const users = await models.Users.findAll({})
     if(users){

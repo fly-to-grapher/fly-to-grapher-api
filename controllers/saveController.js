@@ -9,9 +9,9 @@ const addSave = async (req,res) =>{
         file_id :req.body.file_id
     })
     if(save) {
-        res.send(successResponse(save) , "Success")
+        return res.send(successResponse(save) , "Success")
     } else {
-        res.send(errorResponse('An error occurred while adding the save'))
+        return res.send(errorResponse('An error occurred while adding the save'))
     }
 }
 
@@ -23,7 +23,9 @@ const getSaves = async (req,res) => {
         ]
     })
     if(saves) {
-        res.send(successResponse(savesTransformer(saves)))
+        return res.send(successResponse(savesTransformer(saves)))
+    } else {
+        return res.send(errorResponse('An error occurred'))
     }
 }
 
@@ -35,9 +37,9 @@ const deletSave = async function (req, res, next) {
         }
     });
     if (deleted) {
-        res.send(successResponse(null, 'File has been deleted'))
+        return res.send(successResponse(null, 'File has been deleted'))
     } else {
-        res.send(errorResponse('An error occurred while deleting File'))
+        return res.send(errorResponse('An error occurred while deleting File'))
     };
 };
 

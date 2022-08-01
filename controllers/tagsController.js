@@ -17,16 +17,16 @@ const addTag = async (req, res, next) => {
         }
         return
     }
-    res.send(errorResponse('Please check the tag information'))
+    return res.send(errorResponse('Please check the tag information'))
 }
 
 
 const getTags = async (req, res, next) => {
     const tags = await models.Tags.findAll({})
     if (tags) {
-        res.send(successResponse(tags))
+        return res.send(successResponse(tags))
     } else {
-        res.send(errorResponse('An error occurred'))
+        return res.send(errorResponse('An error occurred'))
     }
 };
 
@@ -39,10 +39,11 @@ const getTag = async (req, res, next) => {
         }
     })
     if (tag) {
-        res.send(successResponse(tag))
+        return res.send(successResponse(tag))
     } else {
         res.status(404)
         res.send(errorResponse('Tag not found'))
+        return
     }
 };
 
@@ -54,11 +55,12 @@ const updateTag = async (req, res, next) => {
     if (category) {
         category.name = name
         category.save().then((category) => {
-            res.send(successResponse(category, 'Tag has been updated'))
+            return res.send(successResponse(category, 'Tag has been updated'))
         })
     } else {
         res.status(404)
         res.send(errorResponse('Tag not found'))
+        return
     }
 }
 
@@ -71,14 +73,11 @@ const deleteTag = async function (req, res, next) {
         }
     });
     if (deleted) {
-        res.send(successResponse(null, 'Tag has been deleted'))
+        return res.send(successResponse(null, 'Tag has been deleted'))
     } 
-    
-    
     else {
-        res.send(errorResponse('An error occurred while deleting Tag'))
+        return res.send(errorResponse('An error occurred while deleting Tag'))
     };
-    return
 
 };
 
