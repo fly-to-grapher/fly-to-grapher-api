@@ -11,8 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       models.Tags.belongsToMany(models.Files, {
-        through: 'category_file',
-        foreignKey: 'file_id'
+        through: 'tag_file',
+        foreignKey: 'tag_id'
       });
     }
   }

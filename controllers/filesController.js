@@ -30,7 +30,7 @@ const addFile = async (req, res) => {
         if (Array.isArray(tags)) {
             file.setTags(tags);
         }
-        res.send(successResponse((fileTransformer(file) , "File created successfully")))
+        res.send(successResponse(fileTransformer(file), "File created successfully"))
         return
     } else {
         return res.send(errorResponse('An error occurred while adding the file'))
@@ -65,6 +65,33 @@ const getFile = async (req, res) => {
     }
 }
 
+
+const getAllPictures = async (req,res) => {
+    const result = await models.Files.findAll({
+        where:{
+            file_type: "picture"
+        }
+    })
+    if (result) {
+        return res.send(successResponse(filesTransformer(result) , 'Success'))
+    } else {
+        return res.send(errorResponse('Failed to get pictures'))
+    }
+}
+
+
+const getAllVideo = async (req,res) => {
+    const result = await models.Files.findAll({
+        where:{
+            file_type: "video"
+        }
+    })
+    if (result) {
+        return res.send(successResponse(filesTransformer(result) , 'Success'))
+    } else {
+        return res.send(errorResponse('Failed to get videos'))
+    }
+}
 
 const getFiles = async (req , res) => {
     const files = await models.Files.findAll({
@@ -168,5 +195,7 @@ module.exports = {
     getFilesByCategory,
     getFilesByTag,
     updateFile,
-    deleteFile
+    deleteFile,
+    getAllPictures,
+    getAllVideo
 }

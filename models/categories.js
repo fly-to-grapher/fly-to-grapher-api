@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       models.Categories.belongsToMany(models.Files, {
         through: 'category_file',
-        foreignKey: 'file_id'
+        foreignKey: 'category_id'
       });
     }
   }

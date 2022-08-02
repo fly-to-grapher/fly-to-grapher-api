@@ -15,13 +15,16 @@ const addSave = async (req,res) =>{
     }
 }
 
-const getSaves = async (req,res) => {
+const getUserSaves = async (req,res) => {
     const saves = await models.Save.findAll({
+        where:{
+            user_id : req.user.id,
+        },
         include : [
             {model:models.Users},
             {model:models.Files}
         ]
-    })
+    },)
     if(saves) {
         return res.send(successResponse(savesTransformer(saves)))
     } else {
@@ -29,14 +32,14 @@ const getSaves = async (req,res) => {
     }
 }
 
-const deletSave = async function (req, res, next) {
+const deleteSave = async function (req, res, next) {
     const id = +req.params.id
-    const deleted = await models.Save.destroy({
+    const result = await models.Save.destroy({
         where: {
             id
         }
     });
-    if (deleted) {
+    if (result) {
         return res.send(successResponse(null, 'File has been deleted'))
     } else {
         return res.send(errorResponse('An error occurred while deleting File'))
@@ -45,6 +48,6 @@ const deletSave = async function (req, res, next) {
 
 module.exports = {
     addSave,
-    getSaves,
-    deletSave
+    getUserSaves,
+    deleteSave
 }

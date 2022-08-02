@@ -9,21 +9,22 @@ const addLike = async (req,res) =>{
         file_id : req.body.file_id
     })
     if(like) {
-        return res.send(successResponse(like) , "Success")
+        return res.send(successResponse(null , "Success"))
     } else {
         return res.send(errorResponse('An error occurred while adding the like'))
     }
 }
 
-const getLikes = async (req,res) => {
+const getFileLikes = async (req,res) => {
     const likes = await models.Likes.findAll({
+        file_id : req.body.file_id,
         include : [
             {model:models.Users},
             {model:models.Files}
         ]
     })
     if(likes) {
-        return res.send(successResponse(likesTransformer(likes)))
+        return res.send(successResponse(likesTransformer(likes), "Success"))
     } else {
         return res.send(errorResponse('An error occurred'))
     }
@@ -45,6 +46,6 @@ const deleteLike = async function (req, res, next) {
 
 module.exports = {
     addLike,
-    getLikes,
+    getFileLikes,
     deleteLike
 }
