@@ -24,7 +24,7 @@ const addTag = async (req, res, next) => {
 const getTags = async (req, res, next) => {
     const tags = await models.Tags.findAll({})
     if (tags) {
-        return res.send(successResponse(tags))
+        return res.send(successResponse(tags) , "Success")
     } else {
         return res.send(errorResponse('An error occurred'))
     }
@@ -39,7 +39,7 @@ const getTag = async (req, res, next) => {
         }
     })
     if (tag) {
-        return res.send(successResponse(tag))
+        return res.send(successResponse(tag) , "Success")
     } else {
         res.status(404)
         res.send(errorResponse('Tag not found'))

@@ -24,7 +24,7 @@ const addCategory = async (req, res, next) => {
 const getCategories = async (req, res, next) => {
     const categories = await models.Categories.findAll({})
     if (categories) {
-        return res.send(successResponse(categories))
+        return res.send(successResponse(categories) , "Success")
     } else {
         return res.send(errorResponse('An error occurred'))
     }
@@ -39,7 +39,7 @@ const getCategory = async (req, res, next) => {
         }
     })
     if (category) {
-        return res.send(successResponse(category))
+        return res.send(successResponse(category) , "Success")
     } else {
         res.status(404)
         res.send(errorResponse('Category not found'))
