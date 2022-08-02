@@ -12,7 +12,7 @@ const addFile = async (req, res) => {
     const file_type = req?.body?.file_type
     const categories = req?.body?.categories;
     const tags = req?.body?.tags;
-    const file_name = req?.file?.file_name
+    const file_name = req?.body?.file_name
     const user_id = req?.user?.id
     if (location == "") {
         return res.send(errorResponse("Please fill the location"));
@@ -30,7 +30,7 @@ const addFile = async (req, res) => {
         if (Array.isArray(tags)) {
             file.setTags(tags);
         }
-        res.send(successResponse((filesTransformer(file) , "File created successfully")))
+        res.send(successResponse((fileTransformer(file) , "File created successfully")))
         return
     } else {
         return res.send(errorResponse('An error occurred while adding the file'))

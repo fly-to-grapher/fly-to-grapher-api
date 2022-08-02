@@ -4,7 +4,7 @@ var {addFile , updateFile , deleteFile , getFile , getFiles , getFilesByCategory
 var { isAuthenticated } = require('../middlewares/isAuthenticated')
 
 
-router.post('/add'  , isAuthenticated, addFile)
+router.post('/add' , isAuthenticated , addFile)
 router.get('/'  , getFiles)
 router.get('/:id'  ,getFile)
 router.get('/bytag/:id' , getFilesByTag)
