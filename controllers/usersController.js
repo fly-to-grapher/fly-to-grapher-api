@@ -52,9 +52,9 @@ const updateInfo = async (req, res) => {
         }
     })
     if (info) {
-        res.send(successResponse(null, "Success"))
+        return res.send(successResponse(null, "Success"))
     } else {
-        errorResponse.send(errorResponse('an error could not update info'))
+        return res.send(errorResponse('an error could not update info'))
     }
 }
 
@@ -69,9 +69,9 @@ const updateAvatar = async (req, res) => {
         }
     })
     if (result) {
-        res.send(successResponse(null, "Success"))
+        return res.send(successResponse(null, "Success"))
     } else {
-        res.send(errorResponse('an error could not update avatar'))
+        return res.send(errorResponse('an error could not update avatar'))
     }
 }
 
@@ -106,6 +106,9 @@ const getUsers = async (req, res) => {
     const users = await models.Users.findAll({})
     if (users) {
         return res.send(successResponse(usersTransformer(users), "Success"))
+    }
+    else {
+        return res.send(errorResponse('failed to get all users'))
     }
 }
 
@@ -199,6 +202,7 @@ const updateUser = async (req, res) => {
     } else {
         res.status(404)
         res.send(errorResponse('The user is undefined'));
+        
     }
 
 }
@@ -218,17 +222,17 @@ const updatePassword = async (req, res) => {
         return res.send(errorResponse('New password is too short'))
     }
     const result = await models.Users.update({
-        password : authService.hashPassword(newPassword)
+        password: authService.hashPassword(newPassword)
 
-    },{
-        where:{
-            id:req.user.id
+    }, {
+        where: {
+            id: req.user.id
         }
     })
-    if (result) { 
-        res.send(successResponse(null,"Password changed successfully"))
+    if (result) {
+       return res.send(successResponse(null, "Password changed successfully"))
     } else {
-        res.send(errorResponse('Password failed to change'))
+       return res.send(errorResponse('Password failed to change'))
     }
 
 }
