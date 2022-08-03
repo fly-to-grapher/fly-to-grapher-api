@@ -4,11 +4,11 @@ var {likesTransformer} = require('../transformers/likesTransformers')
 
 
 const addLike = async (req,res) =>{
-    const like = await models.Likes.create({
+    const result = await models.Likes.create({
         user_id : req.user.id,
         file_id : req.body.file_id
     })
-    if(like) {
+    if(result) {
         return res.send(successResponse(null , "Success"))
     } else {
         return res.send(errorResponse('An error occurred while adding the like'))
@@ -16,36 +16,36 @@ const addLike = async (req,res) =>{
 }
 
 const getFileLikes = async (req,res) => {
-    const likes = await models.Likes.findAll({
+    const result = await models.Likes.findAll({
         file_id : req.body.file_id,
         include : [
             {model:models.Users},
             {model:models.Files}
         ]
     })
-    if(likes) {
-        return res.send(successResponse(likesTransformer(likes), "Success"))
+    if(result) {
+        return res.send(successResponse(likesTransformer(result), "Success"))
     } else {
         return res.send(errorResponse('An error occurred'))
     }
 }
 
-const deleteLike = async function (req, res, next) {
+const removeLike = async function (req, res, next) {
     const id = +req.params.id
-    const deleted = await models.Likes.destroy({
+    const result = await models.Likes.destroy({
         where: {
             id
         }
     });
-    if (deleted) {
-        return res.send(successResponse(null, 'Like has been deleted'))
+    if (result) {
+        return res.send(successResponse(null, 'Success'))
     } else {
-        return res.send(errorResponse('An error occurred while deleting Like'))
+        return res.send(errorResponse('An error occurred while removing Like'))
     };
 };
 
 module.exports = {
     addLike,
     getFileLikes,
-    deleteLike
+    removeLike
 }

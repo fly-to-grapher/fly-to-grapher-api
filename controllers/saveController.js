@@ -4,35 +4,33 @@ var {savesTransformer} = require('../transformers/saveTransformers')
 
 
 const addSave = async (req,res) =>{
-    const save = await models.Save.create({
+    const result = await models.Save.create({
         user_id : req.user.id,
-        file_id :req.body.file_id
+        file_id : req.body.file_id
     })
-    if(save) {
-        return res.send(successResponse(save) , "Success")
+    if(result) {
+        return res.send(successResponse(null , "Success"))
     } else {
         return res.send(errorResponse('An error occurred while adding the save'))
     }
 }
 
 const getUserSaves = async (req,res) => {
-    const saves = await models.Save.findAll({
-        where:{
-            user_id : req.user.id,
-        },
+    const result = await models.Save.findAll({
+        user_id : req.body.user_id,
         include : [
             {model:models.Users},
             {model:models.Files}
         ]
-    },)
-    if(saves) {
-        return res.send(successResponse(savesTransformer(saves)))
+    })
+    if(result) {
+        return res.send(successResponse(savesTransformer(result), "Success"))
     } else {
         return res.send(errorResponse('An error occurred'))
     }
 }
 
-const deleteSave = async function (req, res, next) {
+const removeSave = async function (req, res, next) {
     const id = +req.params.id
     const result = await models.Save.destroy({
         where: {
@@ -40,14 +38,14 @@ const deleteSave = async function (req, res, next) {
         }
     });
     if (result) {
-        return res.send(successResponse(null, 'File has been deleted'))
+        return res.send(successResponse(null, 'Success'))
     } else {
-        return res.send(errorResponse('An error occurred while deleting File'))
+        return res.send(errorResponse('An error occurred while removing save'))
     };
 };
 
 module.exports = {
     addSave,
     getUserSaves,
-    deleteSave
+    removeSave
 }
