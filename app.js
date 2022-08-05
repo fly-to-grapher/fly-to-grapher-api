@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var models = require('./models')
+const cors = require('cors')
 
 var usersRouter = require('./routes/users');
 var filesRouter = require('./routes/files')
@@ -23,6 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors())
 
 app.use('/users', usersRouter);
 app.use('/files', filesRouter);
