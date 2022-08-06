@@ -3,9 +3,10 @@ var router = express.Router();
 var {addFile , updateFile , deleteFile , getFile , getFiles , getFilesByCategory ,getFilesByTag, getAllPictures, getAllVideo , } = require('../controllers/filesController')
 var { isAuthenticated } = require('../middlewares/isAuthenticated')
 var {isOwner} = require('../middlewares/isOwner')
+const multer = require('multer')
+const upload = multer()
 
-
-router.post('/add' , isAuthenticated , addFile)
+router.post('/add' , isAuthenticated , upload.single('file_name')  ,addFile)
 router.get('/' , getFiles)
 router.get('/pictures' , getAllPictures)
 router.get('/videos' , getAllVideo)

@@ -4,6 +4,10 @@ var authService = require('../services/auth');
 var { userTransformer, usersTransformer } = require('../transformers/usersTransformers')
 var { filesTransformer, fileTransformer } = require('../transformers/filesTransformers')
 const { Op } = require("sequelize");
+const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
+const firebase = require("../fierbase")
+const { getStorage } = require("firebase/storage");
+const storage = getStorage(firebase)
 
 
 const signUp = async (req, res) => {
@@ -60,9 +64,21 @@ const updateInfo = async (req, res) => {
 
 
 const updateAvatar = async (req, res) => {
-    const avatar = req.files.avatar
+    const avatar = req.file
+
+    const avatarTypes = ['PNG','JPG', 'JPEJ', 'GIF', 'TIFF' , 'PSD' , 'PDF' , 'EPS' , 'AI' , 'INDD' , 'RAW']
+    const uniqueFileName = `files/${
+        avatar?.originalname?.split(".")[0]
+        }%%${new Date().valueOf()}.${avatar?.originalname?.split(".")[1]}`;
+        const imageRef = ref(storage, uniqueFileName);
+        const metaType = { contentType: avatar?.mimetype, name: avatar?.originalname };
+        if(!avatarTypes.includes(avatar?.originalname?.split(".")[1]))
+        return res.send(errorResponse(`please upload file with those types: ${avatarTypes} `));
+
+        await uploadBytes(imageRef, avatar?.buffer, metaType).then(async () => {
+        const publicUrl = await getDownloadURL(imageRef);
     const result = await models.Users.update({
-        avatar
+        avatar : publicUrl
     }, {
         where: {
             id: req.user.id
@@ -73,7 +89,7 @@ const updateAvatar = async (req, res) => {
     } else {
         return res.send(errorResponse('an error could not update avatar'))
     }
-}
+})}
 
 const logIn = async (req, res, next) => {
     var userNameOrEmail = req.body.userNameOrEmail
