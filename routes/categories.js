@@ -3,8 +3,10 @@ var router = express.Router();
 var {addCategory , getCategories , getCategory , updateCategory , deleteCategory} = require('../controllers/categoriesController')
 var { isAuthenticated } = require('../middlewares/isAuthenticated')
 var { isAdmin } = require('../middlewares/isAdmin')
+const multer = require('multer')
+const upload = multer()
 
-router.post('/add'  , isAuthenticated, isAdmin , addCategory )
+router.post('/add'  , isAuthenticated, upload.single('picture'), isAdmin , addCategory )
 router.get('/' ,  getCategories )
 router.get('/:id' ,  getCategory )
 router.put('/:id' , isAuthenticated , isAdmin , updateCategory )

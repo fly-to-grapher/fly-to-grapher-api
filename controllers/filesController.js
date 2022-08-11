@@ -18,7 +18,10 @@ const  addFile = async (req, res) => {
     const file_name = req?.file
     const user_id = req?.user?.id
     if (!location) {
-        return res.send(errorResponse("Please fill the location"));
+        return res.send(errorResponse("Please fill the location !"));
+    }
+    if (location = ' ') {
+        return res.send(errorResponse("Please fill the location !"));
     }
     if(!categories) {
         return res.send(errorResponse("categories has not been empty !"));

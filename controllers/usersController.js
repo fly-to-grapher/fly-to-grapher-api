@@ -63,33 +63,42 @@ const updateInfo = async (req, res) => {
 }
 
 
-const updateAvatar = async (req, res) => {
-    const avatar = req.file
-
-    const avatarTypes = ['PNG','JPG', 'JPEJ', 'GIF', 'TIFF' , 'PSD' , 'PDF' , 'EPS' , 'AI' , 'INDD' , 'RAW']
-    const uniqueFileName = `files/${
-        avatar?.originalname?.split(".")[0]
-        }%%${new Date().valueOf()}.${avatar?.originalname?.split(".")[1]}`;
-        const imageRef = ref(storage, uniqueFileName);
-        const metaType = { contentType: avatar?.mimetype, name: avatar?.originalname };
-        if(!avatarTypes.includes(avatar?.originalname?.split(".")[1]))
-        return res.send(errorResponse(`please upload file with those types: ${avatarTypes} `));
-
-        await uploadBytes(imageRef, avatar?.buffer, metaType).then(async () => {
-        const publicUrl = await getDownloadURL(imageRef);
-    const result = await models.Users.update({
-        avatar : publicUrl
-    }, {
-        where: {
-            id: req.user.id
-        }
-    })
-    if (result) {
-        return res.send(successResponse(null, "Success"))
-    } else {
-        return res.send(errorResponse('an error could not update avatar'))
-    }
-})}
+// const updateAvatar = async (req, res) => {
+//     try{
+//         console.log("@@@@@@@@@@@@@@@@@@@ I AM INSIDE updateAvatar FUNCTION @@@@@@@@@@@@@@@@@@@@@");
+//         const avatar = req.body.avatar
+//         // const avatarTypes = ['PNG','JPG', 'JPEJ', 'GIF', 'TIFF' , 'PSD' , 'PDF' , 'EPS' , 'AI' , 'INDD' , 'RAW']
+//         // const uniqueFileName = `avatar/${
+//         //     avatar?.originalname?.split(".")[0]
+//         //     }%%${new Date().valueOf()}.${avatar?.originalname?.split(".")[1]}`;
+//         //     const fileRef = ref(storage, uniqueFileName);
+//         //     const metaType = { contentType: avatar?.mimetype, name: avatar?.originalname };
+//         //     if(!avatarTypes.includes(avatar?.originalname?.split(".")[1]))
+//         //     return res.send(errorResponse(`please upload file with those types: ${avatarTypes} `));
+//         //     await uploadBytes(fileRef, avatar?.buffer, metaType).then(async () => {
+//         //     const publicUrl = await getDownloadURL(fileRef);
+//         console.log("UPDATING AVATAR TO: ", avatar, "WHERE USER ID = ", req.user.id);
+//         const result = await models.Users.update(
+//             {
+//                 avatar: avatar
+//                 // avatar : publicUrl
+//             },
+//             {
+//                 where: {
+//                     id: req.user.id
+//                 }
+//             })
+//         console.log("result is:", result);
+//         if (result) {
+//             return res.send(successResponse(null, "Success"))
+//         } else {
+//             return res.send(errorResponse('an error could not update avatar'))
+//         }
+//     } catch(err){
+//         return res.status(500).send(errorResponse(err))
+//     }
+// }
+// })}
 
 const logIn = async (req, res, next) => {
     var userNameOrEmail = req.body.userNameOrEmail
@@ -224,6 +233,7 @@ const updateUser = async (req, res) => {
 }
 
 const updatePassword = async (req, res) => {
+    try{
     const user = await models.Users.findByPk(req.user.id)
     const currentPassword = req?.body?.currentPassword
     const newPassword = req?.body?.newPassword
@@ -250,7 +260,10 @@ const updatePassword = async (req, res) => {
     } else {
        return res.send(errorResponse('Password failed to change'))
     }
-
+}
+    catch(err){
+        return res.status(500).send(errorResponse("Server error", err))
+    }
 }
 
 
@@ -268,7 +281,7 @@ module.exports = {
     getUserSave,
     updateUser,
     updateInfo,
-    updateAvatar,
+    // updateAvatar,
     updatePassword
     // uploadAvatar
 }

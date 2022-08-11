@@ -1,23 +1,43 @@
 const models = require('../models')
 const {errorResponse, successResponse} = require('../helpers/response')
-
+const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
+const firebase = require("../fierbase")
+const { getStorage } = require("firebase/storage");
+const storage = getStorage(firebase)
 
 const addCategory = async (req, res, next) => {
-    const name = req.body?.name
-    if (name != '') {
-        const [category, created] = await models.Categories.findOrCreate({
+    const name = req?.body?.name
+    const picture = req?.file
+    // if (name != '') {
+    //     return res.send(errorResponse('Please fill the name of the category !'))
+    // }
+    if (!picture) {
+        return res.send(errorResponse('The picture has not have to be empty !'))
+    }
+    const picTypes = ['PNG','JPG', 'JPEJ', 'GIF', 'TIFF' , 'PSD' , 'PDF' , 'EPS' , 'AI' , 'INDD' , 'RAW']
+    const uniqueFileName = `categories/${
+        picture?.originalname?.split(".")[0]
+        }%%${new Date().valueOf()}.${picture?.originalname?.split(".")[1]}`;
+        const picRef = ref(storage, uniqueFileName);
+        const metaType = { contentType: picture?.mimetype, name: picture?.originalname };
+        if(!picTypes.includes(picture?.originalname?.split(".")[1]))
+        return res.send(errorResponse(`please upload picture with those types: ${picTypes} `));
+        await uploadBytes(picRef, picture?.buffer, metaType).then(async () => {
+        const publicUrl = await getDownloadURL(picRef);
+        const created = await models.Categories.findOrCreate({
             where: {
                 name
+            } ,
+            defaults:{
+                picture : publicUrl
             }
         })
         if (created) {
-                res.send(successResponse(category, 'Category has been added'))
+                return res.send(successResponse(created, 'Category has been added'))
         } else {
-                res.send(errorResponse('The category is already there'))
+                return res.send(errorResponse('The category is already there'))
         }
-        return
-    }
-    return res.send(errorResponse('Please check the category information'))
+     })
 }
 
 
