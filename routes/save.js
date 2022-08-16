@@ -5,6 +5,6 @@ var { isAuthenticated } = require('../middlewares/isAuthenticated')
 var {isOwner} = require('../middlewares/isOwner')
 
 router.post('/:id' , isAuthenticated , addSave)
-router.get('/' , isAuthenticated , isOwner('save') , getUserSaves)
+router.get('/' , isAuthenticated  , getUserSaves)
 
 module.exports = router;

@@ -7,15 +7,15 @@ const addSave = async (req,res) => {
     try{
         const user_id = req?.user?.id
         const file_id = req?.params?.id
-        const file = await models.Save.findOne({
+        const file = await models.Files.findOne({
             where:{
                 id: file_id
             }
         })
-        if(!file){
+        if(!file) {
             return res.send(errorResponse('file not found'))
         }
-        if(!user_id){
+        if(!user_id) {
             return res.send(errorResponse('user not found'))
         }
         if(!file_id) {

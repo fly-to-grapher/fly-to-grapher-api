@@ -137,19 +137,6 @@ const getUsers = async (req, res) => {
     }
 }
 
-const profile = async (req, res) => {
-    const id = +req.params.id
-    const user = await models.Users.findOne({
-        where: {
-            id
-        }
-    })
-    if (user) {
-        return res.send(successResponse((user), "Success"))
-    } else {
-        return res.send(errorResponse('There was an error'))
-    }
-}
 
 const deleteUser = async (req, res) => {
     const id = +req.params.id
@@ -216,7 +203,7 @@ const updateUser = async (req, res) => {
         res.send(errorResponse('The email is invalid'))
         return
     }
-
+    
     const user = await models.Users.findByPk(req.user.id)
     if (user) {
         user.name = name
@@ -233,7 +220,7 @@ const updateUser = async (req, res) => {
         res.send(errorResponse('The user is undefined'));
         
     }
-
+    
 }
 
 const updatePassword = async (req, res) => {
@@ -265,11 +252,54 @@ const updatePassword = async (req, res) => {
         return res.send(errorResponse('Password failed to change'))
     }
 }
+catch(err){
+    return res.status(500).send(errorResponse("Server error", err))
+}
+} 
+
+
+const profile = async (req,res) =>{
+    try{
+        const user_id = req?.user.id
+        if(!user_id){
+            return res.send('user not found')
+        }
+        const result = await models.Users.findOne({
+            where:{
+                id: user_id,
+                include:[
+                    {model:models.Files},
+                    {model:models.Likes},
+                    {model:models.save}
+                ]
+            }
+        })
+        if(result){
+            return res.send(successResponse(result , 'Success'))
+        }else{
+            return res.send(errorResponse('An error occurred'))
+        }
+    }
     catch(err){
-        return res.status(500).send(errorResponse("Server error", err))
+        console.log('reeeeeeeeeeeeeeee' , err)
+        res.status(500).send(errorResponse('Server error'))
+        return
     }
 }
 
+// const profile = async (req, res) => {
+//     const id = req.params.id
+//     const user = await models.Users.findOne({
+//         where: {
+//             id
+//         }
+//     })
+//     if (user) {
+//         return res.send(successResponse((user), "Success"))
+//     } else {
+//         return res.send(errorResponse('There was an error'))
+//     }
+// }
 
 module.exports = {
     signUp,
