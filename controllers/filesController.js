@@ -20,9 +20,9 @@ const  addFile = async (req, res) => {
     if (!location) {
         return res.send(errorResponse("Please fill the location !"));
     }
-    if (location = ' ') {
-        return res.send(errorResponse("Please fill the location !"));
-    }
+    // if (location) {
+    //     return res.send(errorResponse("Please fill the location !"));
+    // }
     if(!categories) {
         return res.send(errorResponse("categories has not been empty !"));
     }

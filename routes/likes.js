@@ -1,11 +1,10 @@
 var express = require('express');
 var router = express.Router();
-var {addLike , getFileLikes , removeLike} = require('../controllers/likesController')
+var {addLike , getFileLikes , getUserLikes} = require('../controllers/likesController')
 var { isAuthenticated } = require('../middlewares/isAuthenticated')
-var { isOwner } = require('../middlewares/isOwner')
+var { isAdmin } = require('../middlewares/isAdmin')
 
-router.post('/add' , isAuthenticated , addLike)
-router.get('/' , isAuthenticated , getFileLikes)
-router.delete('/remove' , isAuthenticated , isOwner('like') , removeLike)
-
+router.post('/:id' , isAuthenticated , addLike)
+router.get('/file/:id' , isAuthenticated, isAdmin , getFileLikes)
+router.get('/user/:id' , isAuthenticated, isAdmin , getUserLikes)
 module.exports = router;

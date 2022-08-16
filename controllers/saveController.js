@@ -3,15 +3,44 @@ var {successResponse , errorResponse} = require('../helpers/response')
 var {savesTransformer} = require('../transformers/saveTransformers')
 
 
-const addSave = async (req,res) =>{
-    const result = await models.Save.create({
-        user_id : req.user.id,
-        file_id : req.body.file_id
+const addSave = async (req,res) => {
+    try{
+        const user_id = req?.user?.id
+        const file_id = req?.params?.id
+        const file = await models.Save.findOne({
+            where:{
+                id: file_id
+            }
+        })
+        if(!file){
+            return res.send(errorResponse('file not found'))
+        }
+        if(!user_id){
+            return res.send(errorResponse('user not found'))
+        }
+        if(!file_id) {
+            return res.send(errorResponse('plase enter file id'))
+        }
+        
+        const [result , created] = await models.Save.findOrCreate({
+            where:{
+                user_id,
+                file_id
+            } 
     })
-    if(result) {
+    if(created) {
         return res.send(successResponse(null , "Success"))
     } else {
-        return res.send(errorResponse('An error occurred while adding the save'))
+        if(result){
+            const isDeleted = await result.destroy()
+            console.log(isDeleted , "bbbbbbbbbbbbbbbbbbbbbbbbbbb")
+            return res.send(successResponse('save deleted'))
+        }
+        else return res.send(errorResponse('An error occurred while adding the save'))
+    }
+    } catch(err) {
+        console.error(err)
+        return res.status(500).send(errorResponse(err))
     }
 }
 
@@ -30,22 +59,8 @@ const getUserSaves = async (req,res) => {
     }
 }
 
-const removeSave = async function (req, res, next) {
-    const id = +req.params.id
-    const result = await models.Save.destroy({
-        where: {
-            id
-        }
-    });
-    if (result) {
-        return res.send(successResponse(null, 'Success'))
-    } else {
-        return res.send(errorResponse('An error occurred while removing save'))
-    };
-};
 
 module.exports = {
     addSave,
-    getUserSaves,
-    removeSave
+    getUserSaves
 }
