@@ -44,7 +44,7 @@ const addCategory = async (req, res, next) => {
 const getCategories = async (req, res, next) => {
     const categories = await models.Categories.findAll({})
     if (categories) {
-        return res.send(successResponse(categories) , "Success")
+        return res.send(successResponse(categories , "Success"))
     } else {
         return res.send(errorResponse('An error occurred'))
     }

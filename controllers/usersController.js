@@ -44,49 +44,50 @@ const signUp = async (req, res) => {
     }
 }
 
-const updateInfo = async (req, res) => {
-    const location = req?.body?.location
-    const bio = req?.body?.bio
-    const info = await models.Users.update({
-        bio,
-        location
-    }, {
-        where: {
-            id: req.user.id
-        }
-    })
-    if (info) {
-        return res.send(successResponse(null, "Success"))
-    } else {
-        return res.send(errorResponse('an error could not update info'))
-    }
-}
+// const updateInfo = async (req, res) => {
+//     const location = req?.body?.location
+//     const bio = req?.body?.bio
+//     const info = await models.Users.update({
+//         bio,
+//         location
+//     }, {
+//         where: {
+//             id: req.user.id
+//         }
+//     })
+//     if (info) {
+//         return res.send(successResponse(null, "Success"))
+//     } else {
+//         return res.send(errorResponse('an error could not update info'))
+//     }
+// }
 
 
 // const updateAvatar = async (req, res) => {
-//     try{
+//     // try{
 //         console.log("@@@@@@@@@@@@@@@@@@@ I AM INSIDE updateAvatar FUNCTION @@@@@@@@@@@@@@@@@@@@@");
-//         const avatar = req.body.avatar
-//         // const avatarTypes = ['PNG','JPG', 'JPEJ', 'GIF', 'TIFF' , 'PSD' , 'PDF' , 'EPS' , 'AI' , 'INDD' , 'RAW']
-//         // const uniqueFileName = `avatar/${
-//         //     avatar?.originalname?.split(".")[0]
-//         //     }%%${new Date().valueOf()}.${avatar?.originalname?.split(".")[1]}`;
-//         //     const fileRef = ref(storage, uniqueFileName);
-//         //     const metaType = { contentType: avatar?.mimetype, name: avatar?.originalname };
-//         //     if(!avatarTypes.includes(avatar?.originalname?.split(".")[1]))
-//         //     return res.send(errorResponse(`please upload file with those types: ${avatarTypes} `));
-//         //     await uploadBytes(fileRef, avatar?.buffer, metaType).then(async () => {
-//         //     const publicUrl = await getDownloadURL(fileRef);
+//         const avatar = req?.file
+//         const avatarTypes = ['PNG','JPG', 'JPEJ', 'GIF', 'TIFF' , 'PSD' , 'PDF' , 'EPS' , 'AI' , 'INDD' , 'RAW']
+//         const uniqueAvatar = `avatar/${
+//             avatar?.originalname?.split(".")[0]
+//             }%%${new Date().valueOf()}.${avatar?.originalname?.split(".")[1]}`;
+//             const avatarRef = ref(storage, uniqueAvatar);
+//             const metaType = { contentType: avatar?.mimetype, name: avatar?.originalname };
+//             if(!avatarTypes.includes(avatar?.originalname?.split(".")[1])){
+//                 return res.send(errorResponse(`please upload file with those types: ${avatarTypes} `));
+//             }
+//             await uploadBytes(avatarRef, avatar?.buffer, metaType).then(async () => {
+//             const publicUrl = await getDownloadURL(avatarRef);
 //         console.log("UPDATING AVATAR TO: ", avatar, "WHERE USER ID = ", req.user.id);
 //         const result = await models.Users.update(
-//             {
-//                 avatar: avatar
-//                 // avatar : publicUrl
-//             },
 //             {
 //                 where: {
 //                     id: req.user.id
 //                 }
+//             },
+//             {
+//                 // avatar
+//                 avatar : publicUrl
 //             })
 //         console.log("result is:", result);
 //         if (result) {
@@ -94,10 +95,9 @@ const updateInfo = async (req, res) => {
 //         } else {
 //             return res.send(errorResponse('an error could not update avatar'))
 //         }
-//     } catch(err){
-//         return res.status(500).send(errorResponse(err))
-//     }
-// }
+//     // } catch(err){
+//     //     return res.status(500).send(errorResponse(err))
+//     // }
 // })}
 
 const logIn = async (req, res, next) => {
@@ -202,6 +202,8 @@ const updateUser = async (req, res) => {
     const username = req?.body?.username
     const email = req?.body?.email
     const name = req?.body?.name
+    const bio = req?.body?.bio
+    const location = req?.body?.location
     if (name?.length < 2) {
         res.send(errorResponse('The first name is too short'))
         return
@@ -220,6 +222,8 @@ const updateUser = async (req, res) => {
         user.name = name
         user.username = username
         user.email = email
+        user.bio = bio
+        user.location = location
         user.save().then((user) => {
             res.send(successResponse(userTransformer(user), "User has been updated"));
             return
@@ -256,9 +260,9 @@ const updatePassword = async (req, res) => {
         }
     })
     if (result) {
-       return res.send(successResponse(null, "Password changed successfully"))
+        return res.send(successResponse(null, "Password changed successfully"))
     } else {
-       return res.send(errorResponse('Password failed to change'))
+        return res.send(errorResponse('Password failed to change'))
     }
 }
     catch(err){
@@ -266,10 +270,6 @@ const updatePassword = async (req, res) => {
     }
 }
 
-
-// const uploadAvatar = async (req,res) => {
-
-// }
 
 module.exports = {
     signUp,
@@ -280,8 +280,7 @@ module.exports = {
     getUserFiles,
     getUserSave,
     updateUser,
-    updateInfo,
+    // updateInfo,
     // updateAvatar,
     updatePassword
-    // uploadAvatar
 }

@@ -3,28 +3,27 @@ const {errorResponse, successResponse} = require('../helpers/response')
 
 
 const addTag = async (req, res, next) => {
-    const name = req.body?.name
+    const name = req?.body?.name
     if (name != '') {
-        const [tag, created] = await models.Tags.findOrCreate({
+        return res.send(errorResponse('Plase fill name'))
+    }
+        const created = await models.Tags.findOrCreate({
             where: {
                 name
             }
         })
         if (created) {
-            res.send(successResponse(tag, 'Tag has been added'))
+            return res.send(successResponse(created, 'Tag has been added'))
         } else {
-            res.send(errorResponse('The tag is already there'))
+            return res.send(errorResponse('The tag is already there'))
         }
-        return
-    }
-    return res.send(errorResponse('Please check the tag information'))
 }
 
 
 const getTags = async (req, res, next) => {
     const tags = await models.Tags.findAll({})
     if (tags) {
-        return res.send(successResponse(tags) , "Success")
+        return res.send(successResponse(tags , "Success"))
     } else {
         return res.send(errorResponse('An error occurred'))
     }
@@ -32,7 +31,7 @@ const getTags = async (req, res, next) => {
 
 
 const getTag = async (req, res, next) => {
-    const id = +req.params.id
+    const id = req.params.id
     const tag = await models.Tags.findOne({
         where: {
             id
