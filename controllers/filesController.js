@@ -100,7 +100,11 @@ const getFile = async (req, res) => {
 const getAllPictures = async (req,res) => {
     const result = await models.Files.findAll({
         where:{
-            file_type: "picture"
+            file_type: "picture",
+            include:[
+                {model:models.Likes},
+                {model:models.save},
+            ]
         }
     })
     if (result) {
@@ -114,7 +118,11 @@ const getAllPictures = async (req,res) => {
 const getAllVideo = async (req,res) => {
     const result = await models.Files.findAll({
         where:{
-            file_type: "video"
+            file_type: "video",
+            include:[
+                {model:models.Likes},
+                {model:models.save},
+            ]
         }
     })
     if (result) {
