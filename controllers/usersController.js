@@ -267,7 +267,7 @@ const myProfile = async (req,res) =>{
             // ]
         })
         if(!files){
-            return res.send(errorResponse(`${req.user.name} has no photos or videos yet 😔`))
+            return res.send(errorResponse('has not files yet '))
         }
         const saves = await models.Save.findOne({
             user_id : user_id,
@@ -276,7 +276,7 @@ const myProfile = async (req,res) =>{
             ]
         })
         if(!saves){
-            return res.send(errorResponse('Has No saves yet'))
+            return res.send(errorResponse('Has not saves yet'))
         }
         const user = await models.Users.findOne({
             where:{
