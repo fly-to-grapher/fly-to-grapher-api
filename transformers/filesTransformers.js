@@ -1,7 +1,9 @@
 const {userTransformer} = require('./usersTransformers')
 const {likesTransformer} = require('./likesTransformers')
 const fileTransformer = (file) => {
-    file.file_name = `${process.env.UR + '' + process.env.UPLOADS + '' + file.file_name}`
+    file.file_name = `${
+        // process.env.UR + '' + process.env.UPLOADS + '' + 
+        file.file_name}`
     if(file.users) {
         file.users = userTransformer(file.users)
     }

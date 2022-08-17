@@ -16,7 +16,7 @@ router.put('/update', isAuthenticated ,updateUser)
 router.delete('/:id' , isAuthenticated , isAdmin, deleteUser)
 // router.put('/info' , isAuthenticated , updateInfo)
 // router.patch('/avatar' , isAuthenticated , upload.single('avatar') , updateAvatar)
-router.patch('/password' , isAuthenticated , updatePassword)
+router.put('/password' , isAuthenticated , updatePassword)
 
 
 

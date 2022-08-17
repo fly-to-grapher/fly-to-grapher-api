@@ -229,7 +229,6 @@ const updatePassword = async (req, res) => {
     const currentPassword = req?.body?.currentPassword
     const newPassword = req?.body?.newPassword
     if (!authService.comparePasswords(currentPassword, user.password)) {
-        console.log(object);
         return res.send(errorResponse('Password is wrong'))
     }
     if (currentPassword == newPassword) {
@@ -251,9 +250,10 @@ const updatePassword = async (req, res) => {
     } else {
         return res.send(errorResponse('Password failed to change'))
     }
-}
-catch(err){
-    return res.status(500).send(errorResponse("Server error", err))
+} 
+    catch(err){
+        console.error(err , "errrrrrrrrrrrrrrrrrrrrrrrrrrrr")
+        return res.status(500).send(errorResponse("Server error", err))
 }
 } 
 

@@ -10,13 +10,14 @@ const { getStorage } = require("firebase/storage");
 const storage = getStorage(firebase)
 
 
-const  addFile = async (req, res) => {
+const addFile = async (req, res) => {
     const location = req?.body?.location
-    const file_type = req?.body?.file_type
+    let file_type = req?.body?.file_type
     const categories = req?.body?.categories;
     const tags = req?.body?.tags;
     const file_name = req?.file
     const user_id = req?.user?.id
+    console.log("tags: ", tags)
     if (!location) {
         return res.send(errorResponse("Please fill the location !"));
     }
@@ -26,7 +27,8 @@ const  addFile = async (req, res) => {
     if(!categories) {
         return res.send(errorResponse("categories has not been empty !"));
     }
-    const fileTypes = ['PNG','JPG', 'JPEJ', 'GIF', 'TIFF' , 'PSD' , 'PDF' , 'EPS' , 'AI' , 'INDD' , 'RAW' , 'MP4' , 'MOV' , 'WMV' , 'AVI' , 'AVCHD' , 'FLV' , 'F4V' , 'SWF' , 'MKV' , 'WEBM' , 'MPEG-2']
+    const pictureTypes = ['PNG','JPG', 'JPEJ', 'GIF', 'TIFF' , 'PSD' , 'PDF' , 'EPS' , 'AI' , 'INDD' , 'RAW'];
+    const videoTypes = ['MP4' , 'MOV' , 'WMV' , 'AVI' , 'AVCHD' , 'FLV' , 'F4V' , 'SWF' , 'MKV' , 'WEBM' , 'MPEG-2'];
     if(!file_name) {
         return res.send(errorResponse("file has not been empty !"));
     }
@@ -35,9 +37,14 @@ const  addFile = async (req, res) => {
         }%%${new Date().valueOf()}.${file_name?.originalname?.split(".")[1]}`;
         const fileRef = ref(storage, uniqueFileName);
         const metaType = { contentType: file_name?.mimetype, name: file_name?.originalname };
-        if(!fileTypes.includes(file_name?.originalname?.split(".")[1]))
-        return res.send(errorResponse(`please upload file with those types: ${fileTypes} `));
 
+        if(!pictureTypes.includes(file_name?.originalname?.split(".")[1]) && !videoTypes.includes(file_name?.originalname?.split(".")[1]))
+        return res.send(errorResponse(`please upload file with those types: ${[...pictureTypes, ...videoTypes]} `));
+        if(pictureTypes.includes(file_name?.originalname?.split(".")[1])){
+            file_type="picture";
+        }else if(videoTypes.includes(file_name?.originalname?.split(".")[1])){
+            file_type="video"
+        }
         await uploadBytes(fileRef, file_name?.buffer, metaType).then(async () => {
         const publicUrl = await getDownloadURL(fileRef);
         const file = await models.Files.create({
