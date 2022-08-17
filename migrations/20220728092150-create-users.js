@@ -33,7 +33,8 @@ module.exports = {
         type: Sequelize.STRING
       },
       avatar: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        defaultValue:'https://firebasestorage.googleapis.com/v0/b/flytographer-a1fa1.appspot.com/o/avatar%2Fprofile-icon-png-908.png?alt=media&token=3d4fc76e-e162-4074-b8d8-d7b4cd8c3ad4'
       },
       createdAt: {
         allowNull: false,

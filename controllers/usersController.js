@@ -63,42 +63,38 @@ const signUp = async (req, res) => {
 // }
 
 
-// const updateAvatar = async (req, res) => {
-//     // try{
-//         console.log("@@@@@@@@@@@@@@@@@@@ I AM INSIDE updateAvatar FUNCTION @@@@@@@@@@@@@@@@@@@@@");
-//         const avatar = req?.file
-//         const avatarTypes = ['PNG','JPG', 'JPEJ', 'GIF', 'TIFF' , 'PSD' , 'PDF' , 'EPS' , 'AI' , 'INDD' , 'RAW']
-//         const uniqueAvatar = `avatar/${
-//             avatar?.originalname?.split(".")[0]
-//             }%%${new Date().valueOf()}.${avatar?.originalname?.split(".")[1]}`;
-//             const avatarRef = ref(storage, uniqueAvatar);
-//             const metaType = { contentType: avatar?.mimetype, name: avatar?.originalname };
-//             if(!avatarTypes.includes(avatar?.originalname?.split(".")[1])){
-//                 return res.send(errorResponse(`please upload file with those types: ${avatarTypes} `));
-//             }
-//             await uploadBytes(avatarRef, avatar?.buffer, metaType).then(async () => {
-//             const publicUrl = await getDownloadURL(avatarRef);
-//         console.log("UPDATING AVATAR TO: ", avatar, "WHERE USER ID = ", req.user.id);
-//         const result = await models.Users.update(
-//             {
-//                 where: {
-//                     id: req.user.id
-//                 }
-//             },
-//             {
-//                 // avatar
-//                 avatar : publicUrl
-//             })
-//         console.log("result is:", result);
-//         if (result) {
-//             return res.send(successResponse(null, "Success"))
-//         } else {
-//             return res.send(errorResponse('an error could not update avatar'))
-//         }
-//     // } catch(err){
-//     //     return res.status(500).send(errorResponse(err))
-//     // }
-// })}
+const updateAvatar = async (req, res) => {
+    try{
+        console.log("@@@@@@@@@@@@@@@@@@@ I AM INSIDE updateAvatar FUNCTION @@@@@@@@@@@@@@@@@@@@@");
+        const avatar = req?.file
+        const id = req.user.id
+        const avatarTypes = ['PNG','JPG', 'JPEJ', 'GIF', 'TIFF' , 'PSD' , 'PDF' , 'EPS' , 'AI' , 'INDD' , 'RAW']
+        const uniqueAvatar = `avatar/${
+            avatar?.originalname?.split(".")[0]
+            }%%${new Date().valueOf()}.${avatar?.originalname?.split(".")[1]}`;
+            const avatarRef = ref(storage, uniqueAvatar);
+            const metaType = { contentType: avatar?.mimetype, name: avatar?.originalname };
+            if(!avatarTypes.includes(avatar?.originalname?.split(".")[1])){  
+                return res.send(errorResponse(`please upload file with those types: ${avatarTypes} `));
+            }
+            await uploadBytes(avatarRef, avatar?.buffer, metaType).then(async () => {
+            const publicUrl = await getDownloadURL(avatarRef);
+        console.log("UPDATING AVATAR TO: ", avatar, publicUrl,"WHERE USER ID = ", req.user.id);
+        const user = await models.Users.findOne({where: { id }});
+        console.log(user)
+        if(user){
+            user.avatar = publicUrl
+            await user.save()
+            return res.send(successResponse(null, "Success")) 
+        }else {
+            return res.send(errorResponse('an error could not update avatar'))
+        }
+        })
+    } catch(err){
+        console.error(err)
+        return res.status(500).send(errorResponse(err))
+    }
+}
 
 const logIn = async (req, res, next) => {
     var userNameOrEmail = req.body.userNameOrEmail
@@ -258,24 +254,67 @@ const updatePassword = async (req, res) => {
 } 
 
 
-const profile = async (req,res) =>{
+const myProfile = async (req,res) =>{
     try{
         const user_id = req?.user.id
         if(!user_id){
             return res.send('user not found')
         }
-        const result = await models.Users.findOne({
+        const files = await models.Files.findOne({
+            user_id : user_id,
+            // include:[
+            //     {model:models.Likes}
+            // ]
+        })
+        if(!files){
+            return res.send(errorResponse(`${req.user.name} has no photos or videos yet 😔`))
+        }
+        const saves = await models.Save.findOne({
+            user_id : user_id,
+            include:[
+                {model:models.Files}
+            ]
+        })
+        if(!saves){
+            return res.send(errorResponse('Has No saves yet'))
+        }
+        const user = await models.Users.findOne({
             where:{
-                id: user_id,
-                include:[
-                    {model:models.Files},
-                    {model:models.Likes},
-                    {model:models.save}
-                ]
+                id: user_id
             }
         })
-        if(result){
-            return res.send(successResponse(result , 'Success'))
+        if(user){
+            return res.send(successResponse({user, files , saves} , 'Success'))
+        }else{
+            return res.send(errorResponse('An error occurred'))
+        }
+    }
+    catch(err){
+        res.status(500).send(errorResponse('Server error'))
+        return
+    }
+}
+
+
+const profileUser = async (req,res) =>{
+    try{
+        const user_id = req?.params.id
+        const files = await models.Files.findOne({
+            user_id : user_id
+        })
+        if(!files){
+            return res.send(errorResponse(`${req.params.name} has no photos or videos yet 😔`))
+        }
+        const user = await models.Users.findOne({
+            where:{
+                id : user_id
+            }
+        })
+        if(!user){
+            return res.send(errorResponse('user not found'))
+        }
+        if(user){
+            return res.send(successResponse({user , files} , 'Success'))
         }else{
             return res.send(errorResponse('An error occurred'))
         }
@@ -287,30 +326,18 @@ const profile = async (req,res) =>{
     }
 }
 
-// const profile = async (req, res) => {
-//     const id = req.params.id
-//     const user = await models.Users.findOne({
-//         where: {
-//             id
-//         }
-//     })
-//     if (user) {
-//         return res.send(successResponse((user), "Success"))
-//     } else {
-//         return res.send(errorResponse('There was an error'))
-//     }
-// }
 
 module.exports = {
     signUp,
     logIn,
     getUsers,
-    profile,
+    myProfile,
     deleteUser,
     getUserFiles,
     getUserSave,
     updateUser,
     // updateInfo,
-    // updateAvatar,
-    updatePassword
+    updateAvatar,
+    updatePassword,
+    profileUser
 }
