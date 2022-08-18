@@ -76,7 +76,8 @@ const getFile = async (req, res) => {
             id
         },
         include: [
-            { model: models.users },
+            { model: models.Users },
+            { model: models.Save },
             { model : models.Likes ,
                 include : [models.users]
             }
@@ -101,12 +102,13 @@ const getAllPictures = async (req,res) => {
     const result = await models.Files.findAll({
         where:{
             file_type: "picture",
-            include:[
-                {model:models.Likes},
-                {model:models.save},
-            ]
+        },
+        // include:[
+        //     {model:models.Likes},
+        //     {model:models.save},
+        // ]
         }
-    })
+    )
     if (result) {
         return res.send(successResponse(filesTransformer(result) , 'Success'))
     } else {
@@ -115,15 +117,15 @@ const getAllPictures = async (req,res) => {
 }
 
 
-const getAllVideo = async (req,res) => {
+const getAllVideos = async (req,res) => {
     const result = await models.Files.findAll({
         where:{
             file_type: "video",
-            include:[
-                {model:models.Likes},
-                {model:models.save},
-            ]
-        }
+        },
+        // include:[
+        //     {model:models.Likes},
+        //     {model:models.save},
+        // ]
     })
     if (result) {
         return res.send(successResponse(filesTransformer(result) , 'Success'))
@@ -232,5 +234,5 @@ module.exports = {
     updateFile,
     deleteFile,
     getAllPictures,
-    getAllVideo
+    getAllVideos
 }
