@@ -28,7 +28,7 @@ const addFile = async (req, res) => {
         return res.send(errorResponse("categories has not been empty !"));
     }
     const pictureTypes = ['PNG', 'JPG', 'JPEJ', 'GIF', 'TIFF', 'PSD', 'PDF', 'EPS', 'AI', 'INDD', 'RAW'];
-    const videoTypes = ['MP4', 'MOV', 'WMV', 'AVI', 'AVCHD', 'FLV', 'F4V', 'SWF', 'MKV', 'WEBM', 'MPEG-2'];
+    const videoTypes = ['mp4', 'MOV', 'WMV', 'AVI', 'AVCHD', 'FLV', 'F4V', 'SWF', 'MKV', 'WEBM', 'MPEG-2'];
     if (!file_name) {
         return res.send(errorResponse("file has not been empty !"));
     }
