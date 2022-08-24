@@ -148,7 +148,7 @@ const getFiles = async (req , res) => {
 }
 
 const getFilesByCategory = async (req , res) => {
-    const {id} = req.params
+    const {id} = req?.params
     const result = await models.Categories.findByPk(id , {
         include:[
             {
@@ -157,7 +157,7 @@ const getFilesByCategory = async (req , res) => {
     ]
     })
     if(result) {
-        res.send(successResponse(categoryTransformer(result) , 'Success'))
+        res.send(successResponse(filesTransformer(result) , 'Success'))
     } else {
         res.send(errorResponse("Failed getting result"));
     }

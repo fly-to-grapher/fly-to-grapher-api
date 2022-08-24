@@ -3,7 +3,8 @@ var router = express.Router();
 var {addFile , updateFile , deleteFile , getFile , getFiles , getFilesByCategory ,getFilesByTag, getAllPictures, getAllVideos , } = require('../controllers/filesController')
 var { isAuthenticated } = require('../middlewares/isAuthenticated')
 var {isOwner} = require('../middlewares/isOwner')
-const multer = require('multer')
+const multer = require('multer');
+const { isAdmin } = require('../middlewares/isAdmin');
 const upload = multer()
 
 router.post('/add' , isAuthenticated , upload.single('file_name')  ,addFile)

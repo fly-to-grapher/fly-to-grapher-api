@@ -123,13 +123,12 @@ const logIn = async (req, res, next) => {
 }
 
 
-const getUsers = async (req, res) => {
+const getUsers = async (req , res) => {
     const users = await models.Users.findAll({})
     if (users) {
-        return res.send(successResponse(usersTransformer(users), "Success"))
-    }
-    else {
-        return res.send(errorResponse('failed to get all users'))
+        return res.send(successResponse(usersTransformer(users) , 'Success'))
+    } else {
+        return res.send(errorResponse('There was an error'))
     }
 }
 
