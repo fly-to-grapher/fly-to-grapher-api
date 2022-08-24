@@ -156,29 +156,18 @@ const getFiles = async (req, res) => {
     }
 }
 
-<<<<<<< HEAD
-const getFilesByCategory = async (req , res) => {
-    const {id} = req?.params
-    const result = await models.Categories.findByPk(id , {
-        include:[
-=======
+
 const getFilesByCategory = async (req, res) => {
     const { id } = req.params
     const result = await models.Categories.findByPk(id, {
         include: [
->>>>>>> 118991f43960f4be35434f789e4e910a3156447a
             {
                 model: models.Files
             }
         ]
     })
-<<<<<<< HEAD
-    if(result) {
-        res.send(successResponse(filesTransformer(result) , 'Success'))
-=======
     if (result) {
-        res.send(successResponse(categoryTransformer(result), 'Success'))
->>>>>>> 118991f43960f4be35434f789e4e910a3156447a
+        res.send(successResponse(filesTransformer(result), 'Success'))
     } else {
         res.send(errorResponse("Failed getting result"));
     }
