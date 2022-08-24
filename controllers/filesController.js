@@ -1,9 +1,9 @@
 var models = require('../models');
 var { errorResponse, successResponse } = require('../helpers/response');
-var {fileTransformer , filesTransformer} = require('../transformers/filesTransformers')
-var {categoryTransformer} = require('../transformers/categoriesTransformers')
-var {tagTransformer} = require('../transformers/tagsTransformers')
-var {likesTransformer} = require('../transformers/likesTransformers')
+var { fileTransformer, filesTransformer } = require('../transformers/filesTransformers')
+var { categoryTransformer } = require('../transformers/categoriesTransformers')
+var { tagTransformer } = require('../transformers/tagsTransformers')
+var { likesTransformer } = require('../transformers/likesTransformers')
 const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
 const firebase = require("../fierbase")
 const { getStorage } = require("firebase/storage");
@@ -24,28 +24,27 @@ const addFile = async (req, res) => {
     // if (location) {
     //     return res.send(errorResponse("Please fill the location !"));
     // }
-    if(!categories) {
+    if (!categories) {
         return res.send(errorResponse("categories has not been empty !"));
     }
-    const pictureTypes = ['PNG','JPG', 'JPEJ', 'GIF', 'TIFF' , 'PSD' , 'PDF' , 'EPS' , 'AI' , 'INDD' , 'RAW'];
-    const videoTypes = ['MP4' , 'MOV' , 'WMV' , 'AVI' , 'AVCHD' , 'FLV' , 'F4V' , 'SWF' , 'MKV' , 'WEBM' , 'MPEG-2'];
-    if(!file_name) {
+    const pictureTypes = ['PNG', 'JPG', 'JPEJ', 'GIF', 'TIFF', 'PSD', 'PDF', 'EPS', 'AI', 'INDD', 'RAW'];
+    const videoTypes = ['MP4', 'MOV', 'WMV', 'AVI', 'AVCHD', 'FLV', 'F4V', 'SWF', 'MKV', 'WEBM', 'MPEG-2'];
+    if (!file_name) {
         return res.send(errorResponse("file has not been empty !"));
     }
-    const uniqueFileName = `files/${
-        file_name?.originalname?.split(".")[0]
+    const uniqueFileName = `files/${file_name?.originalname?.split(".")[0]
         }%%${new Date().valueOf()}.${file_name?.originalname?.split(".")[1]}`;
-        const fileRef = ref(storage, uniqueFileName);
-        const metaType = { contentType: file_name?.mimetype, name: file_name?.originalname };
+    const fileRef = ref(storage, uniqueFileName);
+    const metaType = { contentType: file_name?.mimetype, name: file_name?.originalname };
 
-        if(!pictureTypes.includes(file_name?.originalname?.split(".")[1]) && !videoTypes.includes(file_name?.originalname?.split(".")[1]))
+    if (!pictureTypes.includes(file_name?.originalname?.split(".")[1]) && !videoTypes.includes(file_name?.originalname?.split(".")[1]))
         return res.send(errorResponse(`please upload file with those types: ${[...pictureTypes, ...videoTypes]} `));
-        if(pictureTypes.includes(file_name?.originalname?.split(".")[1])){
-            file_type="picture";
-        }else if(videoTypes.includes(file_name?.originalname?.split(".")[1])){
-            file_type="video"
-        }
-        await uploadBytes(fileRef, file_name?.buffer, metaType).then(async () => {
+    if (pictureTypes.includes(file_name?.originalname?.split(".")[1])) {
+        file_type = "picture";
+    } else if (videoTypes.includes(file_name?.originalname?.split(".")[1])) {
+        file_type = "video"
+    }
+    await uploadBytes(fileRef, file_name?.buffer, metaType).then(async () => {
         const publicUrl = await getDownloadURL(fileRef);
         const file = await models.Files.create({
             file_name: publicUrl,
@@ -65,8 +64,8 @@ const addFile = async (req, res) => {
         } else {
             return res.send(errorResponse('An error occurred while adding the file'))
         }
-      })
-    }
+    })
+}
 
 
 const getFile = async (req, res) => {
@@ -76,9 +75,11 @@ const getFile = async (req, res) => {
             id
         },
         include: [
-            { model: models.users },
-            { model : models.Likes ,
-                include : [models.users]
+            { model: models.Users },
+            { model: models.Save },
+            {
+                model: models.Likes,
+                include: [models.users]
             }
         ],
     })
@@ -88,8 +89,8 @@ const getFile = async (req, res) => {
         }
     })
     if (file && likes) {
-        return res.send(successResponse(fileTransformer(file) , null , {
-            likes:likesTransformer(likes)
+        return res.send(successResponse(fileTransformer(file), null, {
+            likes: likesTransformer(likes)
         }))
     } else {
         return res.send(errorResponse('There was an error'))
@@ -97,80 +98,90 @@ const getFile = async (req, res) => {
 }
 
 
-const getAllPictures = async (req,res) => {
+const getAllPictures = async (req, res) => {
     const result = await models.Files.findAll({
-        where:{
+        where: {
             file_type: "picture",
             // include:[
             //     {model:models.Likes},
             //     {model:models.save},
             // ]
+        },
+        // include:[
+        //     {model:models.Likes},
+        //     {model:models.save},
+        // ]
         }
-    })
+    )
     if (result) {
-        return res.send(successResponse(filesTransformer(result) , 'Success'))
+        return res.send(successResponse(filesTransformer(result), 'Success'))
     } else {
         return res.send(errorResponse('Failed to get pictures'))
     }
 }
 
 
-const getAllVideo = async (req,res) => {
+const getAllVideos = async (req, res) => {
     const result = await models.Files.findAll({
-        where:{
+        where: {
             file_type: "video",
             // include:[
             //     {model:models.Likes},
             //     {model:models.save},
             // ]
         }
+
+        // include:[
+        //     {model:models.Likes},
+        //     {model:models.save},
+        // ]
     })
     if (result) {
-        return res.send(successResponse(filesTransformer(result) , 'Success'))
+        return res.send(successResponse(filesTransformer(result), 'Success'))
     } else {
         return res.send(errorResponse('Failed to get videos'))
     }
-}
+};
 
-const getFiles = async (req , res) => {
+const getFiles = async (req, res) => {
     const files = await models.Files.findAll({
-        include:[
-                models.Users
+        include: [
+            models.Users
         ]
     })
     if (files) {
-        return res.send(successResponse(filesTransformer(files) , 'Success'))
+        return res.send(successResponse(filesTransformer(files), 'Success'))
     } else {
         return res.send(errorResponse('There was an error'))
     }
 }
 
-const getFilesByCategory = async (req , res) => {
-    const {id} = req.params
-    const result = await models.Categories.findByPk(id , {
-        include:[
+const getFilesByCategory = async (req, res) => {
+    const { id } = req.params
+    const result = await models.Categories.findByPk(id, {
+        include: [
             {
-                model : models.Files
-        }
-    ]
+                model: models.Files
+            }
+        ]
     })
-    if(result) {
-        res.send(successResponse(categoryTransformer(result) , 'Success'))
+    if (result) {
+        res.send(successResponse(categoryTransformer(result), 'Success'))
     } else {
         res.send(errorResponse("Failed getting result"));
     }
 }
-const getFilesByTag = async (req , res) => {
-    const {id} = req.params
-    const result = await models.Tags.findByPk(id , {
-        include:[
+const getFilesByTag = async (req, res) => {
+    const { id } = req.params
+    const result = await models.Tags.findByPk(id, {
+        include: [
             {
-                model : models.Files
-        }
-    ]
+                model: models.Files
+            }
+        ]
     })
-    if(result) {
-        res.send(successResponse(tagTransformer(result) , 'Success'))
+    if (result) {
+        res.send(successResponse(tagTransformer(result), 'Success'))
     } else {
         res.send(errorResponse("Failed getting result"));
     }
@@ -232,5 +243,5 @@ module.exports = {
     updateFile,
     deleteFile,
     getAllPictures,
-    getAllVideo
+    getAllVideos
 }

@@ -5,12 +5,12 @@ const fierbase = require("firebase/app");
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyCE7pcjrWhwUQ5c2kW3Ruz6LYMoByh4KOQ",
-    authDomain: "flytographer-a1fa1.firebaseapp.com",
-    projectId: "flytographer-a1fa1",
-    storageBucket: "flytographer-a1fa1.appspot.com",
-    messagingSenderId: "102411712644",
-    appId: "1:102411712644:web:68f90357fc062ff736ead1"
+    apiKey: process.env.API_KEY,
+    authDomain: process.env.AUTHDOMAIN,
+    projectId: process.env.PROJECTID,
+    storageBucket: process.env.STORAGE_BUCKET,
+    messagingSenderId: process.env.MESSAGING_SENDERID,
+    appId: process.env.APP_ID
 };
 
 // Initialize Firebase

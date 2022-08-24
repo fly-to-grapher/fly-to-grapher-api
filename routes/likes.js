@@ -7,4 +7,5 @@ var { isAdmin } = require('../middlewares/isAdmin')
 router.post('/:id' , isAuthenticated , addLike)
 router.get('/file/:id' , isAuthenticated, isAdmin , getFileLikes)
 router.get('/user/:id' , isAuthenticated, isAdmin , getUserLikes)
+router.get('/' , isAuthenticated, getUserLikes)
 module.exports = router;

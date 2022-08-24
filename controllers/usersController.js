@@ -260,16 +260,16 @@ const myProfile = async (req,res) =>{
         if(!user_id){
             return res.send('user not found')
         }
-        const files = await models.Files.findOne({
+        const files = await models.Files.findAll({
             user_id : user_id,
-            // include:[
-            //     {model:models.Likes}
-            // ]
+            include:[
+                {model:models.Likes}
+            ]
         })
         if(!files){
             return res.send(errorResponse('has not files yet '))
         }
-        const saves = await models.Save.findOne({
+        const saves = await models.Save.findAll({
             user_id : user_id,
             include:[
                 {model:models.Files}
@@ -299,7 +299,7 @@ const myProfile = async (req,res) =>{
 const profileUser = async (req,res) =>{
     try{
         const user_id = req?.params.id
-        const files = await models.Files.findOne({
+        const files = await models.Files.findAll({
             user_id : user_id
         })
         if(!files){
