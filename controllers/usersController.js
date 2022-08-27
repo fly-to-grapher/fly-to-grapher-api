@@ -261,9 +261,10 @@ const myProfile = async (req,res) =>{
         }
         const files = await models.Files.findAll({
             user_id : user_id,
-            include:[
-                {model:models.Likes}
-            ]
+            // include:[
+            //     {model:models.Likes},
+            //     {model:models.Save}
+            // ]
         })
         if(!files){
             return res.send(errorResponse('has not files yet '))
@@ -277,13 +278,14 @@ const myProfile = async (req,res) =>{
         if(!saves){
             return res.send(errorResponse('Has not saves yet'))
         }
-        const user = await models.Users.findOne({
-            where:{
-                id: user_id
-            }
-        })
+        // const user = await models.Users.findOne({
+        //     where:{
+        //         id: user_id
+        //     }
+        // })
+        const user = await models.Users.findByPk(user_id)
         if(user){
-            return res.send(successResponse({user, files , saves} , 'Success'))
+            return res.send(successResponse({ user, files , saves} , 'Success'))
         }else{
             return res.send(errorResponse('An error occurred'))
         }
@@ -301,9 +303,9 @@ const profileUser = async (req,res) =>{
         const files = await models.Files.findAll({
             user_id : user_id
         })
-        if(!files){
-            return res.send(errorResponse(`${req.params.name} has no photos or videos yet 😔`))
-        }
+        // if(!files){
+        //     return res.send(errorResponse(`${req.params.name} has no photos or videos yet 😔`))
+        // }
         const user = await models.Users.findOne({
             where:{
                 id : user_id

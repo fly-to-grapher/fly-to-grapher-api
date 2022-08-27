@@ -107,10 +107,9 @@ const getAllPictures = async (req, res) => {
             //     {model:models.save},
             // ]
         },
-        // include:[
-        //     {model:models.Likes},
-        //     {model:models.save},
-        // ]
+        include:[
+            {model:models.Users}
+        ]
         }
     )
     if (result) {
@@ -122,6 +121,10 @@ const getAllPictures = async (req, res) => {
 
 
 const getAllVideos = async (req, res) => {
+    const user_id = req?.user?.id;
+    console.log("req.user: ", req?.user)
+    console.log("user id: ", req?.user?.id);
+    if(!user_id) return res.send(errorResponse("Please log in"));
     const result = await models.Files.findAll({
         where: {
             file_type: "video",
@@ -129,15 +132,19 @@ const getAllVideos = async (req, res) => {
             //     {model:models.Likes},
             //     {model:models.save},
             // ]
+        },
+        include:[
+            {model:models.Users}
+        ]
+    
+    })
+    const likes = await models.Likes.findAll({
+        where: {
+            user_id
         }
-
-        // include:[
-        //     {model:models.Likes},
-        //     {model:models.save},
-        // ]
     })
     if (result) {
-        return res.send(successResponse(filesTransformer(result), 'Success'))
+        return res.send(successResponse({videos: filesTransformer(result), likes: likes}, 'Success'))
     } else {
         return res.send(errorResponse('Failed to get videos'))
     }
@@ -158,16 +165,20 @@ const getFiles = async (req, res) => {
 
 
 const getFilesByCategory = async (req, res) => {
-    const { id } = req.params
+    const  id  = req?.params?.id
     const result = await models.Categories.findByPk(id, {
         include: [
             {
                 model: models.Files
+            },
+            {
+                model: models.Users
             }
         ]
     })
+    console.log("result of files by category", result)
     if (result) {
-        res.send(successResponse(filesTransformer(result), 'Success'))
+        res.send(successResponse(filesTransformer(result.Files), 'Success'))
     } else {
         res.send(errorResponse("Failed getting result"));
     }

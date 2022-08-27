@@ -29,12 +29,12 @@ const addLike = async (req,res) => {
             } 
     })
     if(created) {
-        return res.send(successResponse(null , "Success"))
+        return res.send(successResponse(null  ,"Success"))
     } else {
         if(result){
             const isDeleted = await result.destroy()
-            console.log(isDeleted , "bbbbbbbbbbbbbbbbbbbbbbbbbbb")
-            return res.send(successResponse('disliked'))
+            // console.log(isDeleted , "bbbbbbbbbbbbbbbbbbbbbbbbbbb")
+            return res.send(successResponse(isDeleted,'disliked'))
         }
         else return res.send(errorResponse('An error occurred while adding the like'))
     }

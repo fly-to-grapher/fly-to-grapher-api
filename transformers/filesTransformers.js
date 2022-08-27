@@ -12,6 +12,7 @@ const fileTransformer = (file) => {
 }
 
 const filesTransformer = (files) => {
+    console.log(typeof files)
     return files.map((singleFile) => fileTransformer(singleFile))
 };
 
