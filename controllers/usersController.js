@@ -85,7 +85,7 @@ const updateAvatar = async (req, res) => {
         if(user){
             user.avatar = publicUrl
             await user.save()
-            return res.send(successResponse(null, "Success")) 
+            return res.send(successResponse(null, "Avatar has been updated")) 
         }else {
             return res.send(errorResponse('an error could not update avatar'))
         }
