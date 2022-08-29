@@ -102,18 +102,19 @@ const getAllPictures = async (req, res) => {
     const result = await models.Files.findAll({
         where: {
             file_type: "picture",
-            // include:[
-            //     {model:models.Likes},
-            //     {model:models.save},
-            // ]
         },
         include:[
-            {model:models.Users}
+            {model:models.Users},
+            // {model:models.Likes},
+            // {model:models.Save}
         ]
         }
     )
+    const likes = await models.Likes.findAll({});
+    const saves = await models.Save.findAll({});
     if (result) {
-        return res.send(successResponse(filesTransformer(result), 'Success'))
+        // console.log(result)
+        return res.send(successResponse({files: filesTransformer(result), likes, saves}, 'Success'))
     } else {
         return res.send(errorResponse('Failed to get pictures'))
     }
@@ -121,32 +122,24 @@ const getAllPictures = async (req, res) => {
 
 
 const getAllVideos = async (req, res) => {
-    const user_id = req?.user?.id;
-    console.log("req.user: ", req?.user)
-    console.log("user id: ", req?.user?.id);
-    if(!user_id) return res.send(errorResponse("Please log in"));
     const result = await models.Files.findAll({
         where: {
             file_type: "video",
-            // include:[
-            //     {model:models.Likes},
-            //     {model:models.save},
-            // ]
         },
         include:[
-            {model:models.Users}
+            {model:models.Users},
+            // {model:models.Likes},
+            // {model:models.Save}
         ]
-    
-    })
-    const likes = await models.Likes.findAll({
-        where: {
-            user_id
         }
-    })
+    )
+    const likes = await models.Likes.findAll({});
+    const saves = await models.Save.findAll({});
     if (result) {
-        return res.send(successResponse({videos: filesTransformer(result), likes: likes}, 'Success'))
+        // console.log(result)
+        return res.send(successResponse({files: filesTransformer(result), likes, saves}, 'Success'))
     } else {
-        return res.send(errorResponse('Failed to get videos'))
+        return res.send(errorResponse('Failed to get pictures'))
     }
 };
 

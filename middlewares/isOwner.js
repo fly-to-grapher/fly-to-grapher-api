@@ -3,8 +3,8 @@ var { errorResponse } = require('../helpers/response')
 
 const isOwner = (type) => {
     return async (req, res, next) => {
-        const user = await models.users.findByPk(req.user.id)
-        if (user?.isadmin == 1) {
+        const user = await models.Users.findByPk(req?.user?.id)
+        if (user?.isAdmin == 1) {
             return next()
         };
         switch (type) {
