@@ -260,23 +260,25 @@ const myProfile = async (req,res) =>{
             return res.send('user not found')
         }
         const files = await models.Files.findAll({
-            user_id : user_id,
-            // include:[
-            //     {model:models.Likes},
-            //     {model:models.Save}
-            // ]
+            where:{
+                user_id : user_id
+            },
+            include:[
+                {model:models.Likes},
+                {model:models.Save}
+            ]
         })
         if(!files){
             return res.send(errorResponse('has not files yet '))
         }
-        const saves = await models.Save.findAll({
+        const save = await models.Save.findAll({
             user_id : user_id,
             include:[
                 {model:models.Files}
             ]
         })
-        if(!saves){
-            return res.send(errorResponse('Has not saves yet'))
+        if(!save){
+            return res.send(errorResponse('Has not save yet'))
         }
         // const user = await models.Users.findOne({
         //     where:{
@@ -284,8 +286,10 @@ const myProfile = async (req,res) =>{
         //     }
         // })
         const user = await models.Users.findByPk(user_id)
+        const likes = await models.Likes.findAll({});
+        const saves = await models.Save.findAll({});
         if(user){
-            return res.send(successResponse({ user, files , saves} , 'Success'))
+            return res.send(successResponse({ user, files , saves , save , likes} , 'Success'))
         }else{
             return res.send(errorResponse('An error occurred'))
         }
@@ -301,7 +305,9 @@ const profileUser = async (req,res) =>{
     try{
         const user_id = req?.params.id
         const files = await models.Files.findAll({
-            user_id : user_id
+            where:{
+                user_id : user_id
+            }
         })
         // if(!files){
         //     return res.send(errorResponse(`${req.params.name} has no photos or videos yet 😔`))
@@ -311,11 +317,13 @@ const profileUser = async (req,res) =>{
                 id : user_id
             }
         })
+        const likes = await models.Likes.findAll({});
+        const saves = await models.Save.findAll({});
         if(!user){
             return res.send(errorResponse('user not found'))
         }
         if(user){
-            return res.send(successResponse({user , files} , 'Success'))
+            return res.send(successResponse({user , files , likes , saves} , 'Success'))
         }else{
             return res.send(errorResponse('An error occurred'))
         }
