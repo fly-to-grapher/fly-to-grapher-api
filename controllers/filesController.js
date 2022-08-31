@@ -27,8 +27,8 @@ const addFile = async (req, res) => {
     if (!categories) {
         return res.send(errorResponse("categories has not been empty !"));
     }
-    const pictureTypes = ['PNG', 'JPG', 'JPEJ', 'GIF', 'TIFF', 'PSD', 'PDF', 'EPS', 'AI', 'INDD', 'RAW'];
-    const videoTypes = ['mp4', 'MOV', 'WMV', 'AVI', 'AVCHD', 'FLV', 'F4V', 'SWF', 'MKV', 'WEBM', 'MPEG-2'];
+    const pictureTypes = ['png', 'jpg', 'jpej', 'gif', 'tiff', 'psd' , 'PNG' , 'JPG' , 'JPEJ'];
+    const videoTypes = ['mp4', 'mov', 'wmv', 'avi'];
     if (!file_name) {
         return res.send(errorResponse("file has not been empty !"));
     }
@@ -226,16 +226,22 @@ const updateFile = async (req, res) => {
 
 
 const deleteFile = async function (req, res, next) {
-    const id = +req.params.id;
-    const deleted = await models.Files.destroy({
-        where: {
-            id,
-        },
-    });
-    if (deleted) {
-        res.send(successResponse(null, "File has been deleted"));
-    } else {
-        res.send(errorResponse("An error occurred while deleting File"));
+    try{
+        const id = +req.params.id;
+        const deleted = await models.Files.destroy({
+            where: {
+                id,
+            },
+        });
+        if (deleted) {
+            res.send(successResponse(null, "File has been deleted"));
+        } else {
+            res.send(errorResponse("An error occurred while deleting File"));
+        }
+    } catch(err){
+        console.error(err)
+        res.status(500).send(errorResponse(err))
+        return
     }
 };
 

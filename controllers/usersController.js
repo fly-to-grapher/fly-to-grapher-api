@@ -35,6 +35,7 @@ const signUp = async (req, res) => {
         defaults: {
             name,
             password: authService.hashPassword(password),
+            isAdmin
         }
     })
     if (user) {
@@ -334,6 +335,45 @@ const profileUser = async (req,res) =>{
         return
     }
 }
+const addUser = async (req, res) => {
+    try{
+
+    const username = req?.body?.username
+    const email = req?.body?.email
+    const password = req?.body?.password
+    const name = req?.body?.name
+    if (username?.length < 3) {
+        return res.send(errorResponse('Username is too short'))
+    }
+    if (name?.length < 3) {
+        return res.send(errorResponse('name is too short'))
+    }
+    if (password?.length < 6) {
+        return res.send(errorResponse('Password is too short'))
+    }
+    // if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email) === false) {
+    //     return res.send(errorResponse('Email is invalid'))
+    // }
+    const user = await models.Users.findOrCreate({
+        where: {
+            username,
+            email
+        },
+            name,
+            password: authService.hashPassword(password),
+            isAdmin
+    })
+    if (user) {
+        return res.send(successResponse(null, 'User created successfully'))
+    } else {
+        return res.send(errorResponse('User is already registered'))
+    }
+}catch(err){
+    console.error(err)
+    res.status(500).send(errorResponse(err))
+    return
+}
+}
 
 
 module.exports = {
@@ -348,5 +388,6 @@ module.exports = {
     // updateInfo,
     updateAvatar,
     updatePassword,
-    profileUser
+    profileUser,
+    addUser
 }

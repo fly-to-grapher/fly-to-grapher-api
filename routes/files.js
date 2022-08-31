@@ -15,7 +15,7 @@ router.get('/:id'  ,getFile)
 router.get('/bytag/:id' , getFilesByTag)
 router.get('/bycategory/:id' , getFilesByCategory)
 router.put('/:id' , isAuthenticated , isOwner('file') , updateFile)
-router.delete('/:id' , isAuthenticated , isOwner('file') , deleteFile)
+router.delete('/:id'   , deleteFile)
 
 
 module.exports = router;

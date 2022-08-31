@@ -1,12 +1,13 @@
 var express = require('express');
 var router = express.Router();
-var {signUp , logIn , getUsers , getUserFiles , getUserSave , myProfile , updateUser , updatePassword , deleteUser , updateAvatar , profileUser} = require('../controllers/usersController')
+var {signUp , logIn , getUsers , getUserFiles , getUserSave , myProfile , updateUser , updatePassword , deleteUser , updateAvatar , addUser , profileUser} = require('../controllers/usersController')
 var { isAuthenticated } = require('../middlewares/isAuthenticated')
 var { isAdmin } = require('../middlewares/isAdmin')
 const multer = require('multer')
 const upload = multer()
 
 router.post('/signup' , signUp)
+router.post('/add' , addUser)
 router.post('/login' , logIn)
 router.get('/'  ,  getUsers)
 router.get('/myprofile' , isAuthenticated , myProfile)

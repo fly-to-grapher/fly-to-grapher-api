@@ -6,6 +6,8 @@ const { getStorage } = require("firebase/storage");
 const storage = getStorage(firebase)
 
 const addCategory = async (req, res, next) => {
+    try{
+
     const name = req?.body?.name
     const picture = req?.file
     // if (name != '') {
@@ -14,7 +16,7 @@ const addCategory = async (req, res, next) => {
     if (!picture) {
         return res.send(errorResponse('The picture has not have to be empty !'))
     }
-    const picTypes = ['PNG','JPG', 'JPEJ', 'GIF', 'TIFF' , 'PSD' , 'PDF' , 'EPS' , 'AI' , 'INDD' , 'RAW']
+    const picTypes = ['png', 'jpg', 'jpej', 'gif', 'tiff', 'psd']
     const uniqueFileName = `categories/${
         picture?.originalname?.split(".")[0]
         }%%${new Date().valueOf()}.${picture?.originalname?.split(".")[1]}`;
@@ -37,7 +39,12 @@ const addCategory = async (req, res, next) => {
         } else {
                 return res.send(errorResponse('The category is already there'))
         }
-     })
+    })
+    }catch(err){
+        console.error(err)
+        res.status(500).send(errorResponse(err))
+        return
+    }
 }
 
 
