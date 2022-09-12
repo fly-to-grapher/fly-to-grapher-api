@@ -6,10 +6,10 @@ var { isAdmin } = require('../middlewares/isAdmin')
 const multer = require('multer')
 const upload = multer()
 
-router.post('/add'  , upload.single('picture'),  addCategory )
+router.post('/add'  , isAuthenticated ,isAdmin , upload.single('picture'),  addCategory )
 router.get('/' ,  getCategories )
 router.get('/:id' ,  getCategory )
 router.put('/:id' , isAuthenticated , isAdmin , updateCategory )
-router.delete('/:id' , deleteCategory )
+router.delete('/:id' ,isAuthenticated , isAdmin, deleteCategory )
 
 module.exports = router;

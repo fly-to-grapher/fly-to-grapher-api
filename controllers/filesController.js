@@ -13,13 +13,13 @@ const { getStorage } = require("firebase/storage");
 const storage = getStorage(firebase);
 
 const addFile = async (req, res) => {
+  try{
   const location = req?.body?.location;
   let file_type = req?.body?.file_type;
   const categories = req?.body?.categories;
   const tags = req?.body?.tags;
   const file_name = req?.file;
   const user_id = req?.user?.id;
-  console.log("tags: ", tags);
   if (!location) {
     return res.send(errorResponse("Please fill the location !"));
   }
@@ -40,7 +40,7 @@ const addFile = async (req, res) => {
     "JPG",
     "JPEJ"
   ];
-  const videoTypes = ["mp4", "mov", "wmv", "avi"];
+  const videoTypes = ["mp4", "mov", "wmv", "avi" , "MP4" ,"MOV"];
   if (!file_name) {
     return res.send(errorResponse("file has not been empty !"));
   }
@@ -93,6 +93,10 @@ const addFile = async (req, res) => {
       return res.send(errorResponse("An error occurred while adding the file"));
     }
   });
+} catch(err) {
+    console.error('Error',err)
+    return res.status(500).send(errorResponse(err))
+}
 };
 
 const getFile = async (req, res) => {
@@ -152,6 +156,16 @@ const getAllPictures = async (req, res) => {
   }
 };
 
+// const getFiles = async (req, res) => {
+//   const files = await models.Files.findAll({
+//     include: [models.Users]
+//   });
+//   if (files) {
+//     return res.send(successResponse(filesTransformer(files), "Success"));
+//   } else {
+//     return res.send(errorResponse("There was an error"));
+//   }
+// };
 const getAllVideos = async (req, res) => {
   const result = await models.Files.findAll({
     where: {

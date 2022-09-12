@@ -7,7 +7,7 @@ const multer = require('multer');
 const { isAdmin } = require('../middlewares/isAdmin');
 const upload = multer()
 
-router.post('/add' , isAuthenticated , upload.single('file_name')  ,addFile)
+router.post('/add' , isAuthenticated , upload.single('file_name')  , addFile)
 router.get('/' , getFiles)
 router.get('/pictures' , getAllPictures)
 router.get('/videos' , getAllVideos)
@@ -15,7 +15,7 @@ router.get('/:id'  ,getFile)
 router.get('/bytag/:id' , getFilesByTag)
 router.get('/bycategory/:id' , getFilesByCategory)
 router.put('/:id' , isAuthenticated , isOwner('file') , updateFile)
-router.delete('/:id'   , deleteFile)
+router.delete('/:id'   , isAuthenticated, deleteFile)
 
 
 module.exports = router;
