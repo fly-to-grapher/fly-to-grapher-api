@@ -13,90 +13,92 @@ const { getStorage } = require("firebase/storage");
 const storage = getStorage(firebase);
 
 const addFile = async (req, res) => {
-  try{
-  const location = req?.body?.location;
-  let file_type = req?.body?.file_type;
-  const categories = req?.body?.categories;
-  const tags = req?.body?.tags;
-  const file_name = req?.file;
-  const user_id = req?.user?.id;
-  if (!location) {
-    return res.send(errorResponse("Please fill the location !"));
-  }
-  // if (location) {
-  //     return res.send(errorResponse("Please fill the location !"));
-  // }
-  if (!categories) {
-    return res.send(errorResponse("categories has not been empty !"));
-  }
-  const pictureTypes = [
-    "png",
-    "jpg",
-    "jpej",
-    "gif",
-    "tiff",
-    "psd",
-    "PNG",
-    "JPG",
-    "JPEJ"
-  ];
-  const videoTypes = ["mp4", "mov", "wmv", "avi" , "MP4" ,"MOV"];
-  if (!file_name) {
-    return res.send(errorResponse("file has not been empty !"));
-  }
-  const uniqueFileName = `files/${
-    file_name?.originalname?.split(".")[0]
-  }%%${new Date().valueOf()}.${file_name?.originalname?.split(".")[1]}`;
-  const fileRef = ref(storage, uniqueFileName);
-  const metaType = {
-    contentType: file_name?.mimetype,
-    name: file_name?.originalname
-  };
-
-  if (
-    !pictureTypes.includes(file_name?.originalname?.split(".")[1]) &&
-    !videoTypes.includes(file_name?.originalname?.split(".")[1])
-  )
-    return res.send(
-      errorResponse(
-        `please upload file with those types: ${[
-          ...pictureTypes,
-          ...videoTypes
-        ]} `
-      )
-    );
-  if (pictureTypes.includes(file_name?.originalname?.split(".")[1])) {
-    file_type = "picture";
-  } else if (videoTypes.includes(file_name?.originalname?.split(".")[1])) {
-    file_type = "video";
-  }
-  await uploadBytes(fileRef, file_name?.buffer, metaType).then(async () => {
-    const publicUrl = await getDownloadURL(fileRef);
-    const file = await models.Files.create({
-      file_name: publicUrl,
-      user_id,
-      location,
-      file_type
-    });
-    if (file) {
-      if (Array.isArray(categories)) {
-        file.setCategories(categories);
-      }
-      if (Array.isArray(tags)) {
-        file.setTags(tags);
-      }
-      res.send(
-        successResponse(fileTransformer(file), "File created successfully")
-      );
-      return;
-    } else {
-      return res.send(errorResponse("An error occurred while adding the file"));
+  try {
+    const location = req?.body?.location;
+    let file_type = req?.body?.file_type;
+    const categories = req?.body?.categories;
+    const tags = req?.body?.tags;
+    const file_name = req?.file;
+    const user_id = req?.user?.id;
+    if (!location) {
+      return res.send(errorResponse("Please fill the location !"));
     }
-  });
-} catch(err) {
-    console.error('Error',err)
-    return res.status(500).send(errorResponse(err))
-}
+    // if (location) {
+    //     return res.send(errorResponse("Please fill the location !"));
+    // }
+    // if (!categories) {
+    //   return res.send(errorResponse("categories has not been empty !"));
+    // }
+    const pictureTypes = [
+      "png",
+      "jpg",
+      "jpej",
+      "gif",
+      "tiff",
+      "psd",
+      "PNG",
+      "JPG",
+      "JPEJ"
+    ];
+    const videoTypes = ["mp4", "mov", "wmv", "avi", "MP4", "MOV"];
+    if (!file_name) {
+      return res.send(errorResponse("file has not been empty !"));
+    }
+    const uniqueFileName = `files/${
+      file_name?.originalname?.split(".")[0]
+    }%%${new Date().valueOf()}.${file_name?.originalname?.split(".")[1]}`;
+    const fileRef = ref(storage, uniqueFileName);
+    const metaType = {
+      contentType: file_name?.mimetype,
+      name: file_name?.originalname
+    };
+
+    if (
+      !pictureTypes.includes(file_name?.originalname?.split(".")[1]) &&
+      !videoTypes.includes(file_name?.originalname?.split(".")[1])
+    )
+      return res.send(
+        errorResponse(
+          `please upload file with those types: ${[
+            ...pictureTypes,
+            ...videoTypes
+          ]} `
+        )
+      );
+    if (pictureTypes.includes(file_name?.originalname?.split(".")[1])) {
+      file_type = "picture";
+    } else if (videoTypes.includes(file_name?.originalname?.split(".")[1])) {
+      file_type = "video";
+    }
+    await uploadBytes(fileRef, file_name?.buffer, metaType).then(async () => {
+      const publicUrl = await getDownloadURL(fileRef);
+      const file = await models.Files.create({
+        file_name: publicUrl,
+        user_id,
+        location,
+        file_type
+      });
+      if (file) {
+        if (Array.isArray(categories)) {
+          file.setCategories(categories);
+        }
+        if (Array.isArray(tags)) {
+          file.setTags(tags);
+        }
+        res.send(
+          successResponse(fileTransformer(file), "File created successfully")
+        );
+        return;
+      } else {
+        return res.send(
+          errorResponse("An error occurred while adding the file")
+        );
+      }
+    });
+  } catch (err) {
+    console.error("Error", err);
+    return res.status(500).send(errorResponse(err));
+  }
 };
 
 const getFile = async (req, res) => {
@@ -222,10 +224,8 @@ const getFilesByCategory = async (req, res) => {
         }
       ]
     });
-    console.log("result of id #" + id + " : ", result);
     const likes = await models.Likes.findAll({});
     const saves = await models.Save.findAll({});
-    console.log("Files.dataValues: ", result?.dataValues)
     if (result) {
       res.send(
         successResponse(

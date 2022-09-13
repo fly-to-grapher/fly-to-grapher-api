@@ -69,9 +69,6 @@ const signUp = async (req, res) => {
 
 const updateAvatar = async (req, res) => {
   try {
-    console.log(
-      "@@@@@@@@@@@@@@@@@@@ I AM INSIDE updateAvatar FUNCTION @@@@@@@@@@@@@@@@@@@@@"
-    );
     const avatar = req?.file;
     const id = req.user.id;
     const avatarTypes = [
@@ -85,7 +82,10 @@ const updateAvatar = async (req, res) => {
       "EPS",
       "AI",
       "INDD",
-      "RAW"
+      "RAW",
+      "png",
+      "jpg",
+      "jpej",
     ];
     const uniqueAvatar = `avatar/${
       avatar?.originalname?.split(".")[0]
@@ -297,10 +297,10 @@ const myProfile = async (req, res) => {
         user_id: user_id
       },
       include: [
-                  { model: models.Likes },
-                  { model: models.Save },
-                  { model: models.Users }
-                ]
+        { model: models.Likes },
+        { model: models.Save },
+        { model: models.Users }
+      ]
     });
     if (!pictures) {
       return res.send(errorResponse("has not pictures yet "));
@@ -396,7 +396,7 @@ const profileUser = async (req, res) => {
 };
 const addUser = async (req, res) => {
   try {
-    console.log(req.body)
+    console.log(req.body);
     const username = req?.body?.username;
     const email = req?.body?.email;
     const password = req?.body?.password;
@@ -420,10 +420,10 @@ const addUser = async (req, res) => {
         username,
         email
       },
-      defaults:{
-          name,
-          password: authService.hashPassword(password),
-          isadmin
+      defaults: {
+        name,
+        password: authService.hashPassword(password),
+        isadmin
       }
     });
     if (user) {
